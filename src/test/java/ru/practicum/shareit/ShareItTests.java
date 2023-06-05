@@ -55,5 +55,4 @@ class ShareItTests {
 		List<ItemDto> newList = itemService.search(1L, "оружие");
 		Assertions.assertNotNull(newList);
 	}
-
 }
