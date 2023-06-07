@@ -64,12 +64,12 @@ public class ItemServiceImpl implements ItemService {
     private Item upItem(Long userId, Long itemId, Item newItem) {
         try {
             Item item = itemStorage.get(userId).get(itemId);
-            if (newItem.getName() == null || newItem.getName().isBlank() ) {
+            if (newItem.getName() == null || newItem.getName().isBlank()) {
                 newItem.setName(itemStorage.get(userId).get(itemId).getName());
             } else {
                 itemStorage.get(userId).get(itemId).setName(newItem.getName());
             }
-            if (newItem.getDescription() == null || newItem.getDescription().isBlank() ) {
+            if (newItem.getDescription() == null || newItem.getDescription().isBlank()) {
                 newItem.setDescription(itemStorage.get(userId).get(itemId).getDescription());
             } else {
                 itemStorage.get(userId).get(itemId).setDescription(newItem.getDescription());

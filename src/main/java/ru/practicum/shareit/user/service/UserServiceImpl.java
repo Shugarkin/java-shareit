@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkUserName(Long id, User user) {
-        if (user.getName() == null || user.getName().isBlank() ) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(userStorage.get(id).getName());
         } else {
             userStorage.get(id).setName(user.getName());
