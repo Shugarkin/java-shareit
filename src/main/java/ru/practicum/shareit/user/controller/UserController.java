@@ -3,15 +3,16 @@ package ru.practicum.shareit.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.marker.Marker;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
@@ -21,23 +22,27 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) { //создание пользователя
-        return userService.createUser(user);
+    @Validated({Marker.Create.class})
+    public UserDto createUser(@Valid @RequestBody UserDto userDto) { //создание пользователя
+        User user = userService.createUser(UserMapper.toItem(userDto));
+        return UserMapper.toItemDto(user);
     }
 
     @PatchMapping("/{userId}")
-    public User updateUser(@Valid @PathVariable Long userId, @RequestBody User user) {
-        return userService.updateUser(userId, user);
+    @Validated({Marker.Update.class})
+    public UserDto updateUser(@PathVariable Long userId, @Valid @RequestBody UserDto userDto) {
+        User user = userService.updateUser(userId, UserMapper.toItem(userDto));
+        return UserMapper.toItemDto(user);
     }
 
     @GetMapping
-    public List<User> findAllUsers() {
-        return userService.findAllUsers();
+    public List<UserDto> findAllUsers() {
+        return userService.findAllUsers().stream().map(UserMapper::toItemDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{userId}")
-    public User findUser(@PathVariable Long userId) {
-        return userService.findUser(userId);
+    public UserDto findUser(@PathVariable Long userId) {
+        return UserMapper.toItemDto(userService.findUser(userId));
     }
 
     @DeleteMapping("/{userId}")

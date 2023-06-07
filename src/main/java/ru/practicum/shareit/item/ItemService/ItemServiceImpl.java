@@ -2,9 +2,8 @@ package ru.practicum.shareit.item.ItemService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.UserNotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.item.dao.ItemStorage;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -18,106 +17,103 @@ public class ItemServiceImpl implements ItemService {
 
     private long nextItemId = 1L;
 
-    private Map<Long, Map<Long, Item>> map = new HashMap<>();
-
-    private final ItemMapper itemMapper;
-
+    private final ItemStorage itemStorage;
     private final UserService userService;
 
     @Override
-    public ItemDto createItem(Long userId, ItemDto itemDto) {
+    public Item createItem(Long userId, Item item) {
         checkUser(userId);
-        addItem(userId, itemDto);
-        return itemDto;
+        addItem(userId, item);
+        return item;
     }
 
     @Override
-    public ItemDto findItem(Long userId, Long itemId) {
+    public Item findItem(Long userId, Long itemId) {
         return getItem(userId, itemId);
     }
 
     @Override
-    public ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto) {
-        ItemDto newDto = itemMapper.toItemDto(upItem(userId, itemId, itemDto));
-        return newDto;
+    public Item updateItem(Long userId, Long itemId, Item item) {
+        return upItem(userId, itemId, item);
     }
 
     @Override
-    public List<ItemDto> findAllItemByUser(Long userId) {
+    public List<Item> findAllItemByUser(Long userId) {
         return getAllItemByUser(userId);
     }
 
     @Override
-    public List<ItemDto> search(Long userId, String text) {
+    public List<Item> search(Long userId, String text) {
         return searchInMap(userId, text);
     }
 
     private void checkUser(Long id) {
         List<Long> map = userService.getUserId();
         if (!map.contains(id)) {
-            throw new UserNotFoundException("У вещи должен быть хозяин, а его нет");
+            throw new EntityNotFoundException("У вещи должен быть хозяин, а его нет");
         }
     }
 
-    private void addItem(Long userId, ItemDto itemDto) {
-        Item item = itemMapper.toItem(itemDto);
-        itemDto.setId(nextItemId);
+    private void addItem(Long userId, Item item) {
+        item.setId(nextItemId);
         item.setId(nextItemId++);
         item.setOwner(userId);
-        map.put(userId, Map.of(item.getId(), item));
+        itemStorage.putInMap(userId, Map.of(item.getId(), item));
     }
 
-    private Item upItem(Long userId, Long itemId, ItemDto itemDto) {
+    private Item upItem(Long userId, Long itemId, Item newItem) {
         try {
-            Item item = map.get(userId).get(itemId);
-            Item newItem = itemMapper.toItem(itemDto);
-            if (newItem.getName() != null) {
-                item.setName(newItem.getName());
+            Item item = itemStorage.get(userId).get(itemId);
+            if (newItem.getName() == null || newItem.getName().isBlank() ) {
+                newItem.setName(itemStorage.get(userId).get(itemId).getName());
+            } else {
+                itemStorage.get(userId).get(itemId).setName(newItem.getName());
             }
-            if (newItem.getDescription() != null) {
-                item.setDescription(newItem.getDescription());
+            if (newItem.getDescription() == null || newItem.getDescription().isBlank() ) {
+                newItem.setDescription(itemStorage.get(userId).get(itemId).getDescription());
+            } else {
+                itemStorage.get(userId).get(itemId).setDescription(newItem.getDescription());
             }
-            if (newItem.getAvailable() != null) {
-                item.setAvailable(newItem.getAvailable());
+            if (newItem.getAvailable() == null) {
+                newItem.setAvailable(itemStorage.get(userId).get(itemId).getAvailable());
+            } else {
+                itemStorage.get(userId).get(itemId).setAvailable(newItem.getAvailable());
             }
             return item;
         } catch (RuntimeException e) {
-            throw new UserNotFoundException("Не найдено");
+            throw new EntityNotFoundException("Не найдено");
         }
     }
 
-    private ItemDto getItem(Long userId, Long itemId) {
-        List<Item> list = map.values()
+    private Item getItem(Long userId, Long itemId) {
+        List<Item> list = itemStorage.values()
                 .stream()
                 .filter(s -> s.containsKey(itemId))
                 .map(a -> a.values())
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        ItemDto itemDto = itemMapper.toItemDto(list.get(0));
-        return itemDto;
+                .collect(Collectors.toList());;
+        return list.get(0);
     }
 
-    private List<ItemDto> getAllItemByUser(Long userId) {
-        List<ItemDto> list = map.get(userId).values()
+    private List<Item> getAllItemByUser(Long userId) {
+        List<Item> list = itemStorage.get(userId).values()
                 .stream()
-                .map(this.itemMapper::toItemDto)
                 .collect(Collectors.toList());
         return list;
     }
 
-    private List<ItemDto> searchInMap(Long userId, String text) {
+    private List<Item> searchInMap(Long userId, String text) {
         if (text.isBlank()) {
             return List.of();
         }
         String lowText = text.toLowerCase();
-        List<ItemDto> list = map.values()
+        List<Item> list = itemStorage.values()
                 .stream()
                 .map(a -> a.values())
                 .flatMap(Collection::stream)
                 .filter(a -> a.getAvailable() == true)
                 .filter(a -> Stream.of(a.getDescription().toLowerCase(), a.getName().toLowerCase())
                         .anyMatch(s -> s.contains(lowText)))
-                .map(this.itemMapper::toItemDto)
                 .collect(Collectors.toList());
 
         return list;

@@ -2,29 +2,24 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.marker.Marker;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @Builder
 public class ItemDto {
 
     private Long id;
 
-    @NotBlank
+    @NotBlank(groups = Marker.Create.class)
     private String name;
 
-    @NotBlank
+    @NotBlank(groups = Marker.Create.class)
     private String description;
 
-    @NotNull
+    @NotNull(groups = Marker.Create.class)
     private Boolean available;
-
-    private User request;
 
 }
