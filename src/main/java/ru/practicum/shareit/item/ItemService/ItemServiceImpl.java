@@ -5,20 +5,19 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dao.ItemStorage;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.dao.UserStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private long nextItemId = 1L;
 
     private final ItemStorage itemStorage;
-    private final UserService userService;
+
+    private final UserStorage userStorage;
 
     @Override
     public Item createItem(Long userId, Item item) {
@@ -29,7 +28,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item findItem(Long userId, Long itemId) {
-        return getItem(userId, itemId);
+        return itemStorage.getItemToSee(itemId);
     }
 
     @Override
@@ -44,78 +43,44 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> search(Long userId, String text) {
-        return searchInMap(userId, text);
+        return itemStorage.searchInMap(userId, text);
     }
 
     private void checkUser(Long id) {
-        List<Long> map = userService.getUserId();
-        if (!map.contains(id)) {
+        if (!userStorage.existById(id)) {
             throw new EntityNotFoundException("У вещи должен быть хозяин, а его нет");
         }
     }
 
     private void addItem(Long userId, Item item) {
-        item.setId(nextItemId);
-        item.setId(nextItemId++);
-        item.setOwner(userId);
-        itemStorage.putInMap(userId, Map.of(item.getId(), item));
+        itemStorage.putInMap(userId, item);
     }
 
     private Item upItem(Long userId, Long itemId, Item newItem) {
-        try {
-            Item item = itemStorage.get(userId).get(itemId);
-            if (newItem.getName() == null || newItem.getName().isBlank()) {
-                newItem.setName(itemStorage.get(userId).get(itemId).getName());
+            Item item = itemStorage.getItem(userId, itemId);
+            if (item != null) {
+                String name = newItem.getName();
+                String description = newItem.getDescription();
+                Boolean available = newItem.getAvailable();
+                if (name != null && !name.isBlank()) {
+                    item.setName(name);
+                }
+                if (description != null && !description.isBlank()) {
+                    item.setDescription(description);
+                }
+                if (available != null) {
+                    item.setAvailable(available);
+                }
             } else {
-                itemStorage.get(userId).get(itemId).setName(newItem.getName());
-            }
-            if (newItem.getDescription() == null || newItem.getDescription().isBlank()) {
-                newItem.setDescription(itemStorage.get(userId).get(itemId).getDescription());
-            } else {
-                itemStorage.get(userId).get(itemId).setDescription(newItem.getDescription());
-            }
-            if (newItem.getAvailable() == null) {
-                newItem.setAvailable(itemStorage.get(userId).get(itemId).getAvailable());
-            } else {
-                itemStorage.get(userId).get(itemId).setAvailable(newItem.getAvailable());
+                throw new EntityNotFoundException("Пользователь не найден");
             }
             return item;
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException("Не найдено");
-        }
-    }
-
-    private Item getItem(Long userId, Long itemId) {
-        List<Item> list = itemStorage.values()
-                .stream()
-                .filter(s -> s.containsKey(itemId))
-                .map(a -> a.values())
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());;
-        return list.get(0);
     }
 
     private List<Item> getAllItemByUser(Long userId) {
-        List<Item> list = itemStorage.get(userId).values()
+        List<Item> list = itemStorage.getItemsByUserId(userId)
                 .stream()
                 .collect(Collectors.toList());
-        return list;
-    }
-
-    private List<Item> searchInMap(Long userId, String text) {
-        if (text.isBlank()) {
-            return List.of();
-        }
-        String lowText = text.toLowerCase();
-        List<Item> list = itemStorage.values()
-                .stream()
-                .map(a -> a.values())
-                .flatMap(Collection::stream)
-                .filter(a -> a.getAvailable() == true)
-                .filter(a -> Stream.of(a.getDescription().toLowerCase(), a.getName().toLowerCase())
-                        .anyMatch(s -> s.contains(lowText)))
-                .collect(Collectors.toList());
-
         return list;
     }
 }

@@ -5,10 +5,14 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class UserStorage {
+
+    private Long nextId = 1L;
 
     private Map<Long, User> userMap = new HashMap<>();
 
@@ -16,8 +20,9 @@ public class UserStorage {
         return userMap.get(id);
     }
 
-    public void put(Long id, User user) {
-        userMap.put(id, user);
+    public void put(User user) {
+        user.setId(nextId);
+        userMap.put(nextId++, user);
     }
 
     public void remove(Long id) {
@@ -25,10 +30,16 @@ public class UserStorage {
     }
 
     public Collection<User> values() {
-        return userMap.values();
+        return List.copyOf(userMap.values());
     }
 
     public Collection<Long> keySet() {
         return userMap.keySet();
     }
+
+    public Boolean existById(Long id) {
+        Boolean answer = userMap.keySet().stream().collect(Collectors.toList()).contains(id);
+        return answer;
+    }
+
 }

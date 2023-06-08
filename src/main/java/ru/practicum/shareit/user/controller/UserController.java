@@ -9,28 +9,24 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
-@Validated
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping
-    @Validated({Marker.Create.class})
-    public UserDto createUser(@Valid @RequestBody UserDto userDto) { //создание пользователя
+    public UserDto createUser(@RequestBody @Validated(Marker.Create.class) UserDto userDto) { //создание пользователя
         User user = userService.createUser(UserMapper.toItem(userDto));
         return UserMapper.toItemDto(user);
     }
 
     @PatchMapping("/{userId}")
-    @Validated({Marker.Update.class})
-    public UserDto updateUser(@PathVariable Long userId, @Valid @RequestBody UserDto userDto) {
+    public UserDto updateUser(@PathVariable Long userId, @Validated({Marker.Update.class}) @RequestBody UserDto userDto) {
         User user = userService.updateUser(userId, UserMapper.toItem(userDto));
         return UserMapper.toItemDto(user);
     }

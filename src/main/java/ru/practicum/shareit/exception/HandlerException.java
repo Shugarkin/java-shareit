@@ -13,7 +13,7 @@ import javax.validation.ConstraintViolationException;
 @RestControllerAdvice("ru.practicum.shareit")
 @Slf4j
 public class HandlerException {
-    @ExceptionHandler(EntityNotFoundException.class)
+    @ExceptionHandler({EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse notFoundError(final RuntimeException e) {
         log.debug("Получен статус 404 Not found {}", e.getMessage(), e);

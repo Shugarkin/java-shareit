@@ -9,23 +9,19 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.marker.Marker;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
-@Validated
 public class ItemController {
 
     private final ItemService itemService;
 
     @PostMapping
-    @Validated({Marker.Create.class})
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @Validated({Marker.Create.class}) @RequestBody ItemDto itemDto) {
         Item item = itemService.createItem(userId, ItemMapper.toItem(itemDto));
         return ItemMapper.toItemDto(item);
     }
@@ -37,9 +33,8 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    @Validated({Marker.Update.class})
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @PathVariable("itemId") final Long itemId, @Valid
-                              @RequestBody ItemDto itemDto) {
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @PathVariable("itemId") final Long itemId,
+                              @Validated({Marker.Update.class}) @RequestBody ItemDto itemDto) {
         Item item = itemService.updateItem(userId, itemId, ItemMapper.toItem(itemDto));
         return ItemMapper.toItemDto(item);
     }
@@ -47,13 +42,13 @@ public class ItemController {
     @GetMapping
     public List<ItemDto> findAllItemByUser(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId) {
         List<Item> listItem = itemService.findAllItemByUser(userId);
-        return listItem.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return ItemMapper.toListItemDto(listItem);
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @RequestParam String text) {
         List<Item> itemList = itemService.search(userId, text);
-        return itemList.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return ItemMapper.toListItemDto(itemList);
     }
 
 }

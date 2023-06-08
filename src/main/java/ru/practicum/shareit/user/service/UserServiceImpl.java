@@ -14,15 +14,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private Long nextId = 1L;
-
     private final UserStorage userStorage;
 
     @Override
     public User createUser(User user) {
-        checkEmail(nextId, user);
-        user.setId(nextId);
-        userStorage.put(nextId++, user);
+        checkEmail(user);
+        userStorage.put(user);
         return user;
     }
 
@@ -33,15 +30,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Long userId, User user) {
-        if (!userStorage.get(userId).getEmail().equals(user.getEmail())) {
-            checkEmail(userId, user);
-        }
-        checkUserName(userId, user);
-        checkUserEmail(userId, user);
+        User userOld = userStorage.get(userId);
+        String email = user.getEmail();
+        String name = user.getName();
 
-        user.setId(userId);
-        userStorage.put(userId, user);
-        return userStorage.get(userId);
+        if (!userOld.getEmail().equals(email)) {
+            checkEmail(user);
+        }
+        if (name != null && !name.isBlank()) {
+            userOld.setName(name);
+        }
+        if (email != null && !email.isBlank()) {
+            userOld.setEmail(email);
+        }
+        return userOld;
     }
 
     @Override
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService {
         return userStorage.keySet().stream().collect(Collectors.toList());
     }
 
-    private void checkEmail(Long id, User user) {
+    private void checkEmail(User user) {
         boolean answer = userStorage.values()
                 .stream()
                 .filter(a -> a.getEmail().equals(user.getEmail()))
@@ -67,22 +69,6 @@ public class UserServiceImpl implements UserService {
                 .isEmpty();
         if (answer != true) {
             throw new EmailDuplicateException("Данный email уже существует");
-        }
-    }
-
-    private void checkUserName(Long id, User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(userStorage.get(id).getName());
-        } else {
-            userStorage.get(id).setName(user.getName());
-        }
-    }
-
-    private void checkUserEmail(Long id, User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            user.setEmail(userStorage.get(id).getEmail());
-        } else {
-            userStorage.get(id).setEmail(user.getEmail());
         }
     }
 }
