@@ -28,7 +28,7 @@ public class ItemStorage {
     }
 
     public Item getItem(Long userId, Long itemId) {
-        List<Item> list = itemMap.getOrDefault(userId,List.of())
+        List<Item> list = itemMap.getOrDefault(userId, new ArrayList<>())
                 .stream()
                 .filter(a -> a.getId() == itemId)
                 .collect(Collectors.toList());
