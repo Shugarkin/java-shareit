@@ -28,9 +28,9 @@ public class ItemStorage {
     }
 
     public Item getItem(Long userId, Long itemId) {
-        List<Item> list = itemMap.getOrDefault(userId, new ArrayList<>())
+        List<Item> list = itemMap.getOrDefault(userId, List.of())
                 .stream()
-                .filter(a -> a.getId() == itemId)
+                .filter(a -> a.getId().equals(itemId))
                 .collect(Collectors.toList());
         if (list.isEmpty()) {
             throw new EntityNotFoundException("Пользователь не найден");
