@@ -38,7 +38,7 @@ public class UserStorage {
     }
 
     public Boolean existById(Long id) {
-        Boolean answer = userMap.keySet().stream().collect(Collectors.toList()).contains(id);
+        Boolean answer = userMap.containsKey(id);
         return answer;
     }
 
