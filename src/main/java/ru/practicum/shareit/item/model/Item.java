@@ -19,6 +19,6 @@ public class Item {
 
     private Long owner;
 
-    private User request;
+    private Long request;
 
 }

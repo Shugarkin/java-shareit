@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EmailDuplicateException;
+import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.dao.UserStorage;
 import ru.practicum.shareit.user.model.User;
 
@@ -15,6 +16,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserStorage userStorage;
 
+    private final UserRepository userRepository;
+
     @Override
     public User createUser(User user) {
         checkEmail(user);
@@ -23,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUser(Long id) {
+    public User findUserById(Long id) {
         return userStorage.get(id);
     }
 
