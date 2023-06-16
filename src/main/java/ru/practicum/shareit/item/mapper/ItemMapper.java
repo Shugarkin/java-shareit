@@ -37,10 +37,6 @@ public class ItemMapper {
                 .build();
     }
 
-    public List<Item> toListItem(List<ItemDto> listDto) {
-        return listDto.stream().map(ItemMapper::toItem).collect(Collectors.toList());
-    }
-
     public List<ItemDto> toListItemDto(List<Item> listItem) {
         return listItem.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }

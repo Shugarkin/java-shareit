@@ -9,7 +9,6 @@ import ru.practicum.shareit.item.model.ItemSearch;
 import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +22,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item createItem(Long userId, Item item) {
         item.setOwner(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь не найден")));
-        //item.setOwner(userId);
         return itemRepository.save(item);
     }
 
@@ -58,6 +56,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemSearch> search(Long userId, String text) {
+        if (text.isBlank()) {
+            return List.of();
+        }
         String newText = text.toLowerCase();
         return itemRepository.findItemSearch(newText, newText);
     }
