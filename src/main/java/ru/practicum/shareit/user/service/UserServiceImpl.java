@@ -2,75 +2,51 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.EmailDuplicateException;
+import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.user.dao.UserRepository;
-import ru.practicum.shareit.user.dao.UserStorage;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserStorage userStorage;
-
     private final UserRepository userRepository;
 
     @Override
     public User createUser(User user) {
-        checkEmail(user);
-        userStorage.put(user);
-        return user;
+        return userRepository.save(user);
     }
 
     @Override
     public User findUserById(Long id) {
-        return userStorage.get(id);
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
     }
 
     @Override
     public User updateUser(Long userId, User user) {
-        User userOld = userStorage.get(userId);
+        User userOld = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
         String email = user.getEmail();
         String name = user.getName();
 
-        if (!userOld.getEmail().equals(email)) {
-            checkEmail(user);
-        }
         if (name != null && !name.isBlank()) {
             userOld.setName(name);
         }
         if (email != null && !email.isBlank()) {
             userOld.setEmail(email);
         }
-        return userOld;
+        return userRepository.save(userOld);
     }
 
     @Override
     public void deleteUser(Long id) {
-        userStorage.remove(id);
+        userRepository.deleteById(id);
     }
 
     @Override
     public List<User> findAllUsers() {
-        return userStorage.values().stream().collect(Collectors.toList());
+        return userRepository.findAll();
     }
 
-    @Override
-    public List<Long> getUserId() {
-        return userStorage.keySet().stream().collect(Collectors.toList());
-    }
-
-    private void checkEmail(User user) {
-        boolean answer = userStorage.values()
-                .stream()
-                .filter(a -> a.getEmail().equals(user.getEmail()))
-                .collect(Collectors.toList())
-                .isEmpty();
-        if (answer != true) {
-            throw new EmailDuplicateException("Данный email уже существует");
-        }
-    }
 }

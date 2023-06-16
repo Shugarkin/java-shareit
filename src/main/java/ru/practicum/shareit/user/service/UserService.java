@@ -16,5 +16,5 @@ public interface UserService {
 
     List<User> findAllUsers();
 
-    List<Long> getUserId();
+    //List<Long> getUserId();
 }

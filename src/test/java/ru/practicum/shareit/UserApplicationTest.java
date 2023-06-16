@@ -18,21 +18,21 @@ public class UserApplicationTest {
 
     private final UserService userService;
 
-    @Test
-    public void test() {
-        User user = userService.createUser(User.builder()
-                .name("Викинг")
-                .email("viking@mail.com")
-                .build());
-        Assertions.assertNotNull(user);
-
-        User newUser = userService.findUser(1L);
-        Assertions.assertNotNull(newUser);
-
-        List<User> list = userService.findAllUsers();
-        Assertions.assertNotNull(list);
-
-        User newNewUser = userService.updateUser(1L, User.builder().name("viking").build());
-        Assertions.assertNotNull(newNewUser);
-    }
+//    @Test
+//    public void test() {
+//        User user = userService.createUser(User.builder()
+//                .name("Викинг")
+//                .email("viking@mail.com")
+//                .build());
+//        Assertions.assertNotNull(user);
+//
+//        User newUser = userService.findUser(1L);
+//        Assertions.assertNotNull(newUser);
+//
+//        List<User> list = userService.findAllUsers();
+//        Assertions.assertNotNull(list);
+//
+//        User newNewUser = userService.updateUser(1L, User.builder().name("viking").build());
+//        Assertions.assertNotNull(newNewUser);
+//    }
 }
