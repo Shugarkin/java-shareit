@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.ItemService.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemSearch;
 import ru.practicum.shareit.marker.Marker;
 
 import javax.validation.constraints.Min;
@@ -48,8 +49,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @RequestParam String text) {
-        List<Item> itemList = itemService.search(userId, text);
-        return ItemMapper.toListItemDto(itemList);
+        List<ItemSearch> itemList = itemService.search(userId, text);
+        return ItemMapper.toListItemSearchInItemDto(itemList);
     }
 
 }

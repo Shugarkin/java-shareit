@@ -7,11 +7,10 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
-
+@AllArgsConstructor
 @Data
 @Builder
 @Entity
-@AllArgsConstructor
 @Table(name = "items")
 public class Item {
 
@@ -20,7 +19,7 @@ public class Item {
     @Column(name = "item_id")
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name_item")
     private String name;
 
     @Column(name = "description")
@@ -29,7 +28,7 @@ public class Item {
     @Column(name = "available")
     private Boolean available;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner")
     private User owner;
 
@@ -37,4 +36,5 @@ public class Item {
     private Long request;
 
     public Item() {}
+
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemSearch;
 import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.util.*;
@@ -33,7 +34,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item updateItem(Long userId, Long itemId, Item item) {
-        Item newItem = itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
+        Item newItem = Optional.of(itemRepository.findByIdAndOwnerId(itemId, userId))
+                .orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
         String name = item.getName();
         String description = item.getDescription();
         Boolean available = item.getAvailable();
@@ -55,8 +57,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> search(Long userId, String text) {
-        return itemRepository.findAllByNameOrDescriptionContainingIgnoreCase(text, text);
+    public List<ItemSearch> search(Long userId, String text) {
+        String newText = text.toLowerCase();
+        return itemRepository.findItemSearch(newText, newText);
     }
 
 }

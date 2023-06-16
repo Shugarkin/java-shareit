@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.ItemService;
 
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemSearch;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ public interface ItemService {
 
     List<Item> findAllItemByUser(Long userId);
 
-    List<Item> search(Long userId, String text);
+    List<ItemSearch> search(Long userId, String text);
 }
