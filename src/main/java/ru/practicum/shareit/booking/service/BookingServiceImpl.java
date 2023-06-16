@@ -21,9 +21,15 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking postBooking(Long userId, Booking booking) {
-        booking.setUser(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь не найден")));
+        booking.setBooker(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь не найден")));
         booking.setItem(itemRepository.findById(booking.getItemId()).orElseThrow(() -> new EntityNotFoundException("Предмет не найден")));
         booking.setStatus(Status.WAITING);
         return bookingRepository.save(booking);
+    }
+
+    @Override
+    public Booking approvedBooking(Long userId, Boolean answer) {
+        bookingRepository.findById()
+        return null;
     }
 }

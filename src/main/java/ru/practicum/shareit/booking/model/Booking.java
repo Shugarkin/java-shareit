@@ -1,8 +1,10 @@
 package ru.practicum.shareit.booking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -24,7 +26,6 @@ public class Booking {
     @Column(name = "start_booking")
     private LocalDateTime start;
 
-    @PastOrPresent
     @Column(name = "finish_booking")
     private LocalDateTime finish;
 
@@ -34,9 +35,10 @@ public class Booking {
 
     private Long itemId;
 
+
     @ManyToOne
     @JoinColumn(name = "users_id")
-    private User user;
+    private User booker;
 
     private Status status;
 

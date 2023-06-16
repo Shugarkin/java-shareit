@@ -20,4 +20,9 @@ public class BookingController {
         return BookingMapper.toBookingDto(newBooking);
     }
 
+    @PatchMapping
+    public BookingDto approvedBooking(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam boolean answer) {
+        Booking newBooking = bookingService.approvedBooking(userId, answer);
+    }
+
 }

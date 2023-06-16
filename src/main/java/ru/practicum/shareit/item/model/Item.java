@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class Item {
     @Column(name = "available")
     private Boolean available;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner")
     private User owner;
