@@ -5,9 +5,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.ItemService.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemSearch;
+import ru.practicum.shareit.item.dto.ItemSearch;
 import ru.practicum.shareit.marker.Marker;
 
 import javax.validation.constraints.Min;
@@ -29,9 +30,10 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findItem(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @PathVariable("itemId") final Long itemId) {
-        Item item = itemService.findItem(userId, itemId);
-        return ItemMapper.toItemDto(item);
+    public ItemDtoWithBooking findItem(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @PathVariable("itemId") final Long itemId) {
+        ItemDtoWithBooking item = itemService.findItem(userId, itemId);
+        //return ItemMapper.toItemDto(item);
+        return item;
     }
 
     @PatchMapping("/{itemId}")

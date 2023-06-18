@@ -29,8 +29,7 @@ public class Item {
     @Column(name = "available")
     private Boolean available;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "owner")
     private User owner;
 

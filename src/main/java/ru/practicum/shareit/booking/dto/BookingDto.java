@@ -4,10 +4,10 @@ import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.marker.Marker;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,13 +16,15 @@ public class BookingDto {
 
     private Long id;
 
-    @NotNull
+    @NotNull(groups = {Marker.Create.class, Marker.Update.class})
+    @FutureOrPresent(groups = {Marker.Create.class, Marker.Update.class})
     private LocalDateTime start;
 
-    @PastOrPresent
+    @NotNull(groups = {Marker.Create.class, Marker.Update.class})
+    @FutureOrPresent(groups = {Marker.Create.class, Marker.Update.class})
     private LocalDateTime end;
 
-    @NotNull
+    @NotNull(groups = {Marker.Create.class})
     private Long itemId;
 
     private Item item;
