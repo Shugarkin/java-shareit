@@ -17,6 +17,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "            or lower(it.description) like %?2%)")
     List<ItemSearch> findItemSearch(String text, String text1);
 
-    Item findByIdAndOwnerId(Long itemId, Long userId);
+    Optional<Item> findByIdAndOwnerId(Long itemId, Long userId);
 
 }

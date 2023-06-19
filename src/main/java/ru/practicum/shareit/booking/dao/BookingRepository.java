@@ -17,12 +17,12 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 //    Optional<Booking> findByIdAndItemOwnerId(Long userId, Long bookingId, Status status);
 
 
-    @Query("select new ru.practicum.shareit.booking.dto.BookingApproved(b.id, b.start, b.finish, b.status, b.item, b.booker) " +
+    @Query("select new ru.practicum.shareit.booking.dto.BookingApproved(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
             "from Booking as b " +
             "where b.id = ?1 and (b.item.owner.id = ?2 or b.booker.id = ?3)")
     Optional<BookingApproved> findBooking(long bookingId, long userId, long userId1);
 
-    @Query("select new ru.practicum.shareit.booking.dto.BookingApproved(b.id, b.start, b.finish, b.status, b.item, b.booker) " +
+    @Query("select new ru.practicum.shareit.booking.dto.BookingApproved(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
             "from Booking as b " +
             "where b.booker.id = ?1 and (b.status = ?2 or b.status = ?3)" +
             "order by b.start desc ")
@@ -32,7 +32,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<BookingApproved> findAllByBookerIdAndStatusOrderByStartDesc(long userId, Status state);
 
-    @Query("select new ru.practicum.shareit.booking.dto.BookingApproved(b.id, b.start, b.finish, b.status, b.item, b.booker) " +
+    @Query("select new ru.practicum.shareit.booking.dto.BookingApproved(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
             "from Booking  as b " +
             "where b.item.owner.id = ?1 and (b.status = ?2 or b.status = ?3) " +
             "order by b.start desc ")
@@ -46,11 +46,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     boolean existsByItemOwnerIdOrBookerId(Long userId, Long userId1);
 
-    @Query("select new ru.practicum.shareit.booking.dto.BookingApproved(b.id, b.start, b.finish, b.status, b.item, b.booker)" +
-            "from Booking as b " +
-            "where b.item.id = ?1 and b.item.owner.id = ?2 and not b.status = ?3 " +
-            "order by b.start desc ")
-    List<Booking> findAllByItemIdAndItemOwnerIdOrderByStart(Long itemId, Long userId, Status status);
+    List<Booking> findAllByItemIdAndItemOwnerIdAndStatusNotOrderByStart(Long itemId, Long userId, Status status);
 
     List<Booking> findAllByItemOwnerIdOrderByStart(Long userId);
+
+    Optional<Booking> findByItemIdAndBookerId(Long itemId, Long userId);
+
+    List<Booking> findAllByItemIdAndItemOwnerIdAndStatusNot(Long itemId, Long userId, Status status);
 }

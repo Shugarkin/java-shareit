@@ -24,6 +24,8 @@ public class BookingApproved {
 
     private Item item;
 
+    private Long itemId;
+
     private User booker;
 
 }

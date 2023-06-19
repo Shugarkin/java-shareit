@@ -24,7 +24,9 @@ public class ItemDtoWithBooking {
 
     private UselessBooking nextBooking;
 
-    public void add(List<UselessBooking> list) {
+    private List<CommentDto> comments;
+
+    public void addBooking(List<UselessBooking> list) {
         if (list.isEmpty()) {
             lastBooking = null;
             nextBooking = null;
@@ -39,6 +41,14 @@ public class ItemDtoWithBooking {
             lastBooking.setBookerId(list.get(0).getBookerId());
             nextBooking.setId(list.get(1).getId());
             nextBooking.setBookerId(list.get(1).getBookerId());
+        }
+    }
+
+    public void addComments(List<CommentDto> list) {
+        if (list.isEmpty()) {
+            comments = List.of();
+        } else {
+            comments.addAll(list);
         }
     }
 

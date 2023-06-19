@@ -7,6 +7,7 @@ import ru.practicum.shareit.marker.Marker;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @Builder
@@ -25,4 +26,5 @@ public class ItemDto {
     @NotNull(groups = Marker.Create.class)
     private Boolean available;
 
+    private List<CommentDto> comments;
 }
