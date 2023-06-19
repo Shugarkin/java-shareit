@@ -6,6 +6,8 @@ import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingApproved;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.EntityBooking;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.model.UselessBooking;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -40,24 +42,8 @@ public class ItemServiceImpl implements ItemService {
     public ItemDtoWithBooking findItem(Long userId, Long itemId) {
         Item item =  itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
         ItemDtoWithBooking itemDtoWithBooking = ItemMapper.itemDtoWithBooking(item);
-        List<Booking> list = bookingRepository.findAllByItemIdAndItemOwnerIdOrderByStart(itemId, userId);
-        if (list.isEmpty()) {
-            return itemDtoWithBooking;
-        } else if (list.size() == 1) {
-            itemDtoWithBooking.setLastBooking(UselessBooking.builder()
-                    .id(list.get(0).getId())
-                    .bookerId(list.get(0).getBooker().getId())
-                    .build());
-        } else {
-            itemDtoWithBooking.setLastBooking(UselessBooking.builder()
-                    .id(list.get(0).getId())
-                    .bookerId(list.get(0).getBooker().getId())
-                    .build());
-            itemDtoWithBooking.setNextBooking(UselessBooking.builder()
-                    .id(list.get(1).getId())
-                    .bookerId(list.get(1).getBooker().getId())
-                    .build());
-        }
+        List<UselessBooking> list = BookingMapper.toListUselessBooking(bookingRepository.findAllByItemIdAndItemOwnerIdOrderByStart(itemId, userId, Status.REJECTED));
+        itemDtoWithBooking.add(list);
         return itemDtoWithBooking;
     }
 
@@ -81,37 +67,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findAllItemByUser(Long userId) {
-        List<Item> list = itemRepository.findAllByOwnerId(userId);
+    public List<ItemDtoWithBooking> findAllItemByUser(Long userId) {
+        List<Item> listItem = itemRepository.findAllByOwnerId(userId);
         List<Booking> list1 = bookingRepository.findAllByItemOwnerIdOrderByStart(userId);
-//        List<UselessBooking> uList = BookingMapper.toListUselessBooking(list1);
-//        Map<Long, UselessBooking> mapBooking = uList.stream().collect(Collectors.toMap(UselessBooking::getId, Function.identity()));
-//        List<ItemDtoWithBooking> listItem = list.stream().map(ItemMapper::itemDtoWithBooking).collect(Collectors.toList());
-//
-//        for (ItemDtoWithBooking itemDtoWithBooking : listItem) {
-//            for (UselessBooking uselessBooking : uList) {
-//                if (uselessBooking.getId().equals(itemDtoWithBooking.getId())) {
-//
-//                }
-//            }
-//        }
-//
-//        List<UselessBooking> uList = BookingMapper.toListUselessBooking(list1);
-//        List<ItemDtoWithBooking> listItem = list.stream().map(ItemMapper::itemDtoWithBooking).collect(Collectors.toList());
-//        List<ItemDtoWithBooking> listItem1 = listItem.stream()
-//                .map(a -> {UselessBooking u = uList.stream()
-//                        .filter(s -> s.getId().equals(a.getId()))
-//                        .findFirst()
-//                        .orElse(null);
-//                        a.setLastBooking(u);
-//                        return a;
-//                }).collect(Collectors.toList());
 
-//        List<UselessBooking> uList = BookingMapper.toListUselessBooking(list1);
-//        List<ItemDtoWithBooking> listItem = list.stream().map(ItemMapper::itemDtoWithBooking)
-//                .map(a -> {Booking booking = list1.stream().filter(s -> s.getItem().getId().equals(a.getId()));
-//                a.setLastBooking(new UselessBooking(booking.getId(), booking.getBooker().getId()));})
-        return null;
+        List<UselessBooking> uList = BookingMapper.toListUselessBooking(list1);
+
+
+        List<ItemDtoWithBooking> result = ItemMapper.toListItemDtoWithBooking(listItem);
+        result.stream()
+                .forEach(item -> {List<UselessBooking> list =
+                    uList.stream()
+                            .filter(a -> a.getItemId().equals(item.getId()))
+                            .collect(Collectors.toList());
+                            item.add(list);
+                });
+        return result;
     }
 
     @Override
@@ -122,5 +93,6 @@ public class ItemServiceImpl implements ItemService {
         String newText = text.toLowerCase();
         return itemRepository.findItemSearch(newText, newText);
     }
+
 
 }

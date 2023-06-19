@@ -13,7 +13,7 @@ public interface ItemService {
 
     Item updateItem(Long userId, Long itemId, Item itemDto);
 
-    List<Item> findAllItemByUser(Long userId);
+    List<ItemDtoWithBooking> findAllItemByUser(Long userId);
 
     List<ItemSearch> search(Long userId, String text);
 }

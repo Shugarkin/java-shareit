@@ -10,5 +10,7 @@ import lombok.Data;
 public class UselessBooking {
     private Long id;
 
+    private Long itemId;
+
     private Long bookerId;
 }

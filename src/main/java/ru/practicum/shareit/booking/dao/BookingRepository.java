@@ -46,7 +46,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     boolean existsByItemOwnerIdOrBookerId(Long userId, Long userId1);
 
-    List<Booking> findAllByItemIdAndItemOwnerIdOrderByStart(Long itemId, Long userId);
+    @Query("select new ru.practicum.shareit.booking.dto.BookingApproved(b.id, b.start, b.finish, b.status, b.item, b.booker)" +
+            "from Booking as b " +
+            "where b.item.id = ?1 and b.item.owner.id = ?2 and not b.status = ?3 " +
+            "order by b.start desc ")
+    List<Booking> findAllByItemIdAndItemOwnerIdOrderByStart(Long itemId, Long userId, Status status);
 
     List<Booking> findAllByItemOwnerIdOrderByStart(Long userId);
 }

@@ -53,6 +53,7 @@ public class BookingMapper {
     public UselessBooking toUseLess(Booking booking) {
         return UselessBooking.builder()
                 .id(booking.getId())
+                .itemId(booking.getItemId())
                 .bookerId(booking.getBooker().getId())
                 .build();
     }
@@ -60,4 +61,5 @@ public class BookingMapper {
     public List<UselessBooking> toListUselessBooking(List<Booking> list) {
         return list.stream().map(BookingMapper::toUseLess).collect(Collectors.toList());
     }
+
 }

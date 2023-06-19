@@ -55,7 +55,7 @@ public class ItemMapper {
                 .build();
     }
 
-//    public List<ItemDtoWithBooking> toListItemDtoWithBooking(List<Item> list) {
-//        return list.stream().map(ItemMapper::itemDtoWithBooking).collect(Collectors.toList());
-//    }
+    public List<ItemDtoWithBooking> toListItemDtoWithBooking(List<Item> list) {
+        return list.stream().map(ItemMapper::itemDtoWithBooking).collect(Collectors.toList());
+    }
 }

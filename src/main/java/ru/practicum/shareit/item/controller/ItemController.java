@@ -44,9 +44,9 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> findAllItemByUser(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId) {
-        List<Item> listItem = itemService.findAllItemByUser(userId);
-        return ItemMapper.toListItemDto(listItem);
+    public List<ItemDtoWithBooking> findAllItemByUser(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId) {
+        List<ItemDtoWithBooking> listItem = itemService.findAllItemByUser(userId);
+        return listItem;
     }
 
     @GetMapping("/search")
