@@ -13,7 +13,9 @@ import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,16 +78,36 @@ public class BookingServiceImpl implements BookingService {
         if (state == null) {
             state = Status.ALL;
         }
+
+        //Также он может принимать значения CURRENT (англ. «текущие»),
+        // **PAST** (англ. «завершённые»),
+        // FUTURE (англ. «будущие»),
+        // WAITING (англ. «ожидающие подтверждения»),
+        // REJECTED (англ. «отклонённые»).
         if (state.equals(Status.CURRENT)) {
-            return bookingRepository.findAllByStatus(userId, Status.REJECTED, Status.APPROVED);
+            List<BookingApproved> list = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
+                    .filter(a -> a.getFinish().isAfter(LocalDateTime.now()))
+                    .filter(a -> a.getStart().isBefore(LocalDateTime.now()))
+                    .collect(Collectors.toList());
+            return list;
         } else if (state.equals(Status.PAST)) {
-            return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.APPROVED);
+            List<BookingApproved> list = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
+                    .filter(a -> a.getStatus().equals(Status.APPROVED))
+                    .filter(a -> a.getFinish().isBefore(LocalDateTime.now()))
+                    .collect(Collectors.toList());
+            return list;
         } else if (state.equals(Status.FUTURE)) {
-            return bookingRepository.findAllByStatus(userId, Status.WAITING, Status.APPROVED);
+            List<BookingApproved> list = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
+                    .filter(a -> a.getStart().isAfter(LocalDateTime.now()))
+                    .collect(Collectors.toList());
+
+            return list;
         } else if (state.equals(Status.WAITING)) {
-            return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
+            List<BookingApproved> list = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
+            return list;
         } else if (state.equals(Status.REJECTED)) {
-            return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
+            List<BookingApproved> list = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
+            return list;
         } else if (state.equals(Status.ALL)){
             return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
         }
@@ -100,11 +122,22 @@ public class BookingServiceImpl implements BookingService {
             state = Status.ALL;
         }
         if (state.equals(Status.CURRENT)) {
-            return bookingRepository.findAllByItemOwnerIdAndStatus(userId, Status.REJECTED, Status.APPROVED);
+            List<BookingApproved> list = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId).stream()
+                    .filter(a -> a.getFinish().isAfter(LocalDateTime.now()))
+                    .filter(a -> a.getStart().isBefore(LocalDateTime.now()))
+                    .collect(Collectors.toList());
+            return list;
         } else if (state.equals(Status.PAST)) {
-            return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.APPROVED);
+            List<BookingApproved> list =  bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.APPROVED).stream()
+                    .filter(a -> a.getStatus().equals(Status.APPROVED))
+                    .filter(a -> a.getFinish().isBefore(LocalDateTime.now()))
+                    .collect(Collectors.toList());
+            return list;
         } else if (state.equals(Status.FUTURE)) {
-            return bookingRepository.findAllByItemOwnerIdAndStatus(userId, Status.WAITING, Status.APPROVED);
+            List<BookingApproved> list =  bookingRepository.findAllByItemOwnerIdAndStatus(userId, Status.WAITING, Status.APPROVED).stream()
+                    .filter(a -> a.getStart().isAfter(LocalDateTime.now()))
+                    .collect(Collectors.toList());
+            return list;
         } else if (state.equals(Status.WAITING)) {
             return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
         } else if (state.equals(Status.REJECTED)) {

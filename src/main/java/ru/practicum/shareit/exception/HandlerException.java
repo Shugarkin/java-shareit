@@ -30,7 +30,7 @@ public class HandlerException {
     }
 
     @ExceptionHandler({MissingRequestHeaderException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class,
-                            TimeErrorException.class, AvailableException.class})
+                            TimeErrorException.class, AvailableException.class, CommentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse badRequest(final Exception e) {
         log.debug("Получен статус 400 Bad Request {}", e.getMessage(), e);

@@ -35,7 +35,7 @@ public class ItemDtoWithBooking {
         if (list.isEmpty()) {
             comments = List.of();
         } else {
-            comments.addAll(list);
+            comments = list;
         }
     }
 

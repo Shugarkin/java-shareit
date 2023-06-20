@@ -19,13 +19,10 @@ public class CommentDto {
     @NotBlank
     private String text;
 
-    @NotNull
     private Long item;
 
-    @NotNull
-    private Long user;
+    private String authorName;
 
-    @FutureOrPresent
-    private LocalDateTime create;
+    private LocalDateTime created;
 
 }

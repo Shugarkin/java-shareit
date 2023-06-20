@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.dto.ItemSearch;
 import ru.practicum.shareit.marker.Marker;
@@ -59,8 +60,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable("itemId") final Long itemId,
-                                    @RequestParam String text) {
-        CommentDto comment = CommentMapper.toDto(itemService.createComment(userId, itemId, text));
+                                    @RequestBody Comment newComment) {
+        CommentDto comment = CommentMapper.toDto(itemService.createComment(userId, itemId, newComment));
         return comment;
     }
 

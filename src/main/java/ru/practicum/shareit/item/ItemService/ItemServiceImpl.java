@@ -9,6 +9,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.EntityBooking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.model.UselessBooking;
+import ru.practicum.shareit.exception.CommentException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dao.CommentRepository;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -50,9 +51,10 @@ public class ItemServiceImpl implements ItemService {
         Item item =  itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
         ItemDtoWithBooking itemDtoWithBooking = ItemMapper.itemDtoWithBooking(item);
 
-        List<CommentDto> listCommentDto = CommentMapper.toListDto(commentRepository.findAllByItemIdAndUserId(itemId, userId));
+        List<CommentDto> listCommentDto = CommentMapper.toListDto(commentRepository.findAllByItemId(itemId));
 
         List<Booking> bokklist = bookingRepository.findAllByItemIdAndItemOwnerIdAndStatusNotOrderByStart(itemId, userId, Status.REJECTED);
+
         UselessBooking lastBooking = bokklist.stream()
                 .filter(a -> a.getFinish().isBefore(LocalDateTime.now()))
                 .map(BookingMapper::toUseLess)
@@ -135,24 +137,25 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Comment createComment(Long userId, Long itemId, String text) {
-        if (text.isBlank()) {
-            throw new EntityNotFoundException("Пока так 2");
+    public Comment createComment(Long userId, Long itemId, Comment newComment) {
+        if (newComment.getText().isBlank()) {
+            throw new CommentException("Комментарий не может быть пустым");
         }
-        Booking booking = bookingRepository.findByItemIdAndBookerId(itemId, userId)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь не бронировал вещь"));
+        Booking booking = bookingRepository.findFirstByItemIdAndBookerIdAndStatus(itemId, userId, Status.APPROVED)
+                .orElseThrow(() -> new CommentException("Пользователь не бронировал вещь"));
+
         if (booking.getFinish().isBefore(LocalDateTime.now())) {
             Comment comment = Comment.builder()
                     .item(booking.getItem())
                     .create(LocalDateTime.now())
                     .user(booking.getBooker())
-                    .text(text)
+                    .text(newComment.getText())
                     .build();
-            return comment;
+
+            return commentRepository.save(comment);
         } else {
-            throw new EntityNotFoundException("Пока так");
+            throw new CommentException("Вы еще не отдали вещь");
         }
     }
-
 
 }
