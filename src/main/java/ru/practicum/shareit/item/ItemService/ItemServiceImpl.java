@@ -3,18 +3,16 @@ package ru.practicum.shareit.item.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dao.BookingRepository;
-import ru.practicum.shareit.booking.dto.BookingApproved;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.EntityBooking;
+import ru.practicum.shareit.booking.model.SmallBooking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.booking.model.UselessBooking;
 import ru.practicum.shareit.exception.CommentException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dao.CommentRepository;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
+import ru.practicum.shareit.item.dto.ItemDtoWithBookingAndComment;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -24,7 +22,6 @@ import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,23 +44,25 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoWithBooking findItem(Long userId, Long itemId) {
+    public ItemDtoWithBookingAndComment findItem(Long userId, Long itemId) {
+        //не уверен что отправлять dto из этого класса правильно, однако,
+        // каким образом собрать столько сущностей в одну в контролере я не знаю((
         Item item =  itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
-        ItemDtoWithBooking itemDtoWithBooking = ItemMapper.itemDtoWithBooking(item);
+        ItemDtoWithBookingAndComment itemDtoWithBooking = ItemMapper.itemDtoWithBooking(item);
 
         List<CommentDto> listCommentDto = CommentMapper.toListDto(commentRepository.findAllByItemId(itemId));
 
         List<Booking> bokklist = bookingRepository.findAllByItemIdAndItemOwnerIdAndStatusNotOrderByStart(itemId, userId, Status.REJECTED);
 
-        UselessBooking lastBooking = bokklist.stream()
+        SmallBooking lastBooking = bokklist.stream()
                 .filter(a -> a.getFinish().isBefore(LocalDateTime.now()))
-                .map(BookingMapper::toUseLess)
+                .map(BookingMapper::toSmallBooking)
                 .reduce((a,b) -> b)
                 .orElse(null);
 
-        UselessBooking nextBooking = bokklist.stream()
+        SmallBooking nextBooking = bokklist.stream()
                 .filter(a -> a.getFinish().isAfter(LocalDateTime.now()))
-                .map(BookingMapper::toUseLess)
+                .map(BookingMapper::toSmallBooking)
                 .findFirst()
                 .orElse(null);
 
@@ -92,27 +91,27 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoWithBooking> findAllItemByUser(Long userId) {
+    public List<ItemDtoWithBookingAndComment> findAllItemByUser(Long userId) {
         List<Item> listItem = itemRepository.findAllByOwnerId(userId);
         List<Booking> listBooking = bookingRepository.findAllByItemOwnerIdOrderByStart(userId);
 
         List<CommentDto> listCommentDto = CommentMapper.toListDto(commentRepository.findAllByUserId(userId));
 
-        List<ItemDtoWithBooking> result = ItemMapper.toListItemDtoWithBooking(listItem);
+        List<ItemDtoWithBookingAndComment> result = ItemMapper.toListItemDtoWithBooking(listItem);
         result.stream()
                 .forEach(item -> {
-                    UselessBooking lastBooking = listBooking.stream()
+                    SmallBooking lastBooking = listBooking.stream()
                             .filter(a -> a.getItem().getId().equals(item.getId()))
                             .filter(a -> a.getFinish().isBefore(LocalDateTime.now()))
                             .reduce((a,b) -> b)
-                            .map(BookingMapper::toUseLess)
+                            .map(BookingMapper::toSmallBooking)
                             .orElse(null);
 
-                    UselessBooking nextBooking = listBooking.stream()
+                    SmallBooking nextBooking = listBooking.stream()
                             .filter(a -> a.getItem().getId().equals(item.getId()))
                             .filter(a -> a.getFinish().isAfter(LocalDateTime.now()))
                             .findFirst()
-                            .map(BookingMapper::toUseLess)
+                            .map(BookingMapper::toSmallBooking)
                             .orElse(null);
                     item.addBooking(lastBooking, nextBooking);
                 });

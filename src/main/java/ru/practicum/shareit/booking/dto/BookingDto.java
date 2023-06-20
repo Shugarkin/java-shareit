@@ -16,12 +16,12 @@ public class BookingDto {
 
     private Long id;
 
-    @NotNull(groups = {Marker.Create.class, Marker.Update.class})
-    @FutureOrPresent(groups = {Marker.Create.class, Marker.Update.class})
+    @NotNull(groups = {Marker.Create.class})
+    @FutureOrPresent(groups = {Marker.Create.class})
     private LocalDateTime start;
 
-    @NotNull(groups = {Marker.Create.class, Marker.Update.class})
-    @FutureOrPresent(groups = {Marker.Create.class, Marker.Update.class})
+    @NotNull(groups = {Marker.Create.class})
+    @FutureOrPresent(groups = {Marker.Create.class})
     private LocalDateTime end;
 
     @NotNull(groups = {Marker.Create.class})

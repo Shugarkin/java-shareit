@@ -12,8 +12,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BookingApproved {
+public class BookingSearch {
 
+    //класс нужен только для выгрузки данных из бд. наверно это лишнее, но я так и не понял почему hiber ругается на отсудтсвие конструктора
     private Long id;
 
     private LocalDateTime start;

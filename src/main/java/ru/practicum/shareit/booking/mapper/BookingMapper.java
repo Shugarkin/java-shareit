@@ -2,9 +2,9 @@ package ru.practicum.shareit.booking.mapper;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.dto.BookingApproved;
-import ru.practicum.shareit.booking.model.UselessBooking;
+import ru.practicum.shareit.booking.model.SmallBooking;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,11 +31,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public List<BookingDto> toListBookingDto(List<Booking> list) {
-        return list.stream().map(BookingMapper :: toBookingDto).collect(Collectors.toList());
-    }
-
-    public BookingDto appBookingToBookingDto(BookingApproved bookingApproved) {
+    public BookingDto fromBookingSearchToBookingDto(BookingSearch bookingApproved) {
         return BookingDto.builder()
                 .id(bookingApproved.getId())
                 .start(bookingApproved.getStart())
@@ -46,20 +42,15 @@ public class BookingMapper {
                 .build();
     }
 
-    public List<BookingDto> appBookingToDtoList(List<BookingApproved> list) {
-        return list.stream().map(BookingMapper::appBookingToBookingDto).collect(Collectors.toList());
+    public List<BookingDto> fromBookingSearchToDtoList(List<BookingSearch> list) {
+        return list.stream().map(BookingMapper::fromBookingSearchToBookingDto).collect(Collectors.toList());
     }
 
-    public UselessBooking toUseLess(Booking booking) {
-        return UselessBooking.builder()
+    public SmallBooking toSmallBooking(Booking booking) {
+        return SmallBooking.builder()
                 .id(booking.getId())
                 .itemId(booking.getItemId())
                 .bookerId(booking.getBooker().getId())
                 .build();
     }
-
-    public List<UselessBooking> toListUselessBooking(List<Booking> list) {
-        return list.stream().map(BookingMapper::toUseLess).collect(Collectors.toList());
-    }
-
 }

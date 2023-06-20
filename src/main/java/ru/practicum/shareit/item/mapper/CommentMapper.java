@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class CommentMapper {
 
-    public CommentDto toDto(Comment comment) {
+    public CommentDto toCommentDto(Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())
                 .authorName(comment.getUser().getName())
@@ -21,6 +21,13 @@ public class CommentMapper {
     }
 
     public List<CommentDto> toListDto(List<Comment> list) {
-        return list.stream().map(CommentMapper::toDto).collect(Collectors.toList());
+        return list.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
+    }
+
+    public Comment toComment(CommentDto comment) {
+        return Comment.builder()
+                .id(comment.getId())
+                .text(comment.getText())
+                .build();
     }
 }

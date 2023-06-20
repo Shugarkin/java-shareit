@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.ItemService.ItemService;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
+import ru.practicum.shareit.item.dto.ItemDtoWithBookingAndComment;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -27,28 +27,29 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @Validated({Marker.Create.class}) @RequestBody ItemDto itemDto) {
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+                              @Validated({Marker.Create.class}) @RequestBody ItemDto itemDto) {
         Item item = itemService.createItem(userId, ItemMapper.toItem(itemDto));
         return ItemMapper.toItemDto(item);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoWithBooking findItem(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @PathVariable("itemId") final Long itemId) {
-        ItemDtoWithBooking item = itemService.findItem(userId, itemId);
-        //return ItemMapper.toItemDto(item);
+    public ItemDtoWithBookingAndComment findItem(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId,
+                                                 @PathVariable("itemId") @Min(0) final Long itemId) {
+        ItemDtoWithBookingAndComment item = itemService.findItem(userId, itemId);
         return item;
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @PathVariable("itemId") final Long itemId,
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @PathVariable("itemId") @Min(0) final Long itemId,
                               @Validated({Marker.Update.class}) @RequestBody ItemDto itemDto) {
         Item item = itemService.updateItem(userId, itemId, ItemMapper.toItem(itemDto));
         return ItemMapper.toItemDto(item);
     }
 
     @GetMapping
-    public List<ItemDtoWithBooking> findAllItemByUser(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId) {
-        List<ItemDtoWithBooking> listItem = itemService.findAllItemByUser(userId);
+    public List<ItemDtoWithBookingAndComment> findAllItemByUser(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId) {
+        List<ItemDtoWithBookingAndComment> listItem = itemService.findAllItemByUser(userId);
         return listItem;
     }
 
@@ -59,10 +60,11 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable("itemId") final Long itemId,
-                                    @RequestBody Comment newComment) {
-        CommentDto comment = CommentMapper.toDto(itemService.createComment(userId, itemId, newComment));
-        return comment;
+    public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId,
+                                    @PathVariable("itemId") @Min(0) final Long itemId,
+                                    @Validated({Marker.Update.class}) @RequestBody CommentDto newComment) {
+        Comment comment = itemService.createComment(userId, itemId, CommentMapper.toComment(newComment));
+        return CommentMapper.toCommentDto(comment);
     }
 
 }

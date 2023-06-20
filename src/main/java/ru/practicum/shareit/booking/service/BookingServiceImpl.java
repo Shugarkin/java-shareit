@@ -3,8 +3,8 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dao.BookingRepository;
+import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.dto.BookingApproved;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.exception.AvailableException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
@@ -52,61 +52,55 @@ public class BookingServiceImpl implements BookingService {
         if (answer1 == false) {
             throw new AvailableException("ты не имеешь права, о ты не имеешь права");
         }
-        Booking b = bookingRepository.findByIdAndItemOwnerId(bookingId, userId)
+        Booking booking = bookingRepository.findByIdAndItemOwnerId(bookingId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Бронь не найдена"));
-        if (!b.getStatus().equals(Status.WAITING)) {
+        if (!booking.getStatus().equals(Status.WAITING)) {
             throw new AvailableException("Предмет не может быть одобрен");
         }
         if (answer == true) {
-            b.setStatus(Status.APPROVED);
+            booking.setStatus(Status.APPROVED);
         } else {
-            b.setStatus(Status.REJECTED);
+            booking.setStatus(Status.REJECTED);
         }
 
-        return bookingRepository.save(b);
+        return bookingRepository.save(booking);
     }
 
     @Override
-    public BookingApproved findBooking(long userId, long bookingId) {
+    public BookingSearch findBooking(long userId, long bookingId) {
         return bookingRepository.findBooking(bookingId, userId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Бронирование не найдено"));
     }
 
     @Override
-    public List<BookingApproved> findListBooking(long userId, Status state) {
+    public List<BookingSearch> findListBooking(long userId, Status state) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Юзер не найден"));
         if (state == null) {
             state = Status.ALL;
         }
-
-        //Также он может принимать значения CURRENT (англ. «текущие»),
-        // **PAST** (англ. «завершённые»),
-        // FUTURE (англ. «будущие»),
-        // WAITING (англ. «ожидающие подтверждения»),
-        // REJECTED (англ. «отклонённые»).
         if (state.equals(Status.CURRENT)) {
-            List<BookingApproved> list = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
+            List<BookingSearch> list = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
                     .filter(a -> a.getFinish().isAfter(LocalDateTime.now()))
                     .filter(a -> a.getStart().isBefore(LocalDateTime.now()))
                     .collect(Collectors.toList());
             return list;
         } else if (state.equals(Status.PAST)) {
-            List<BookingApproved> list = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
+            List<BookingSearch> list = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
                     .filter(a -> a.getStatus().equals(Status.APPROVED))
                     .filter(a -> a.getFinish().isBefore(LocalDateTime.now()))
                     .collect(Collectors.toList());
             return list;
         } else if (state.equals(Status.FUTURE)) {
-            List<BookingApproved> list = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
+            List<BookingSearch> list = bookingRepository.findAllByBookerIdOrderByStartDesc(userId).stream()
                     .filter(a -> a.getStart().isAfter(LocalDateTime.now()))
                     .collect(Collectors.toList());
 
             return list;
         } else if (state.equals(Status.WAITING)) {
-            List<BookingApproved> list = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
+            List<BookingSearch> list = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
             return list;
         } else if (state.equals(Status.REJECTED)) {
-            List<BookingApproved> list = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
+            List<BookingSearch> list = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
             return list;
         } else if (state.equals(Status.ALL)){
             return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
@@ -116,25 +110,25 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingApproved> findListOwnerBooking(long userId, Status state) {
+    public List<BookingSearch> findListOwnerBooking(long userId, Status state) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Юзер не найден"));
         if (state == null) {
             state = Status.ALL;
         }
         if (state.equals(Status.CURRENT)) {
-            List<BookingApproved> list = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId).stream()
+            List<BookingSearch> list = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId).stream()
                     .filter(a -> a.getFinish().isAfter(LocalDateTime.now()))
                     .filter(a -> a.getStart().isBefore(LocalDateTime.now()))
                     .collect(Collectors.toList());
             return list;
         } else if (state.equals(Status.PAST)) {
-            List<BookingApproved> list =  bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.APPROVED).stream()
+            List<BookingSearch> list =  bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.APPROVED).stream()
                     .filter(a -> a.getStatus().equals(Status.APPROVED))
                     .filter(a -> a.getFinish().isBefore(LocalDateTime.now()))
                     .collect(Collectors.toList());
             return list;
         } else if (state.equals(Status.FUTURE)) {
-            List<BookingApproved> list =  bookingRepository.findAllByItemOwnerIdAndStatus(userId, Status.WAITING, Status.APPROVED).stream()
+            List<BookingSearch> list =  bookingRepository.findAllByItemOwnerIdAndStatus(userId, Status.WAITING, Status.APPROVED).stream()
                     .filter(a -> a.getStart().isAfter(LocalDateTime.now()))
                     .collect(Collectors.toList());
             return list;

@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class UselessBooking {
+public class SmallBooking {
     private Long id;
 
     private Long itemId;
