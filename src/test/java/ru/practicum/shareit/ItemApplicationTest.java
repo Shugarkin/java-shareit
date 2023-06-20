@@ -27,6 +27,7 @@ public class ItemApplicationTest {
     private final UserService userService;
 
     private final BookingService bookingService;
+
     @Test
     public void test() {
         User user2 = userService.createUser(User.builder()

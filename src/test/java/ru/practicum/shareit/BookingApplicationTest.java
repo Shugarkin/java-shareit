@@ -25,6 +25,7 @@ public class BookingApplicationTest {
     private final UserService userService;
 
     private final BookingService bookingService;
+
     @Test
     public void test() {
 

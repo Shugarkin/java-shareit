@@ -35,6 +35,8 @@ public class Item {
     @Column(name = "request")
     private Long request;
 
-    public Item() {}
+    public Item() {
+
+    }
 
 }

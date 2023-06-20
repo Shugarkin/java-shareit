@@ -20,7 +20,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public ItemDto ItemSerchToItemDto(ItemSearch item) {
+    public ItemDto itemSerchToItemDto(ItemSearch item) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -39,7 +39,7 @@ public class ItemMapper {
     }
 
     public List<ItemDto> toListItemSearchInItemDto(List<ItemSearch> listItem) {
-        return listItem.stream().map(ItemMapper::ItemSerchToItemDto).collect(Collectors.toList());
+        return listItem.stream().map(ItemMapper::itemSerchToItemDto).collect(Collectors.toList());
     }
 
     public ItemDtoWithBookingAndComment itemDtoWithBooking(Item item) {

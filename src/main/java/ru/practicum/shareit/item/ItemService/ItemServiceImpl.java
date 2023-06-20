@@ -117,11 +117,13 @@ public class ItemServiceImpl implements ItemService {
                 });
 
         result.stream()
-                .forEach(item -> {List<CommentDto> list  =
+                .forEach(item -> {
+                    List<CommentDto> list  =
                     listCommentDto.stream()
                             .filter(a -> a.getItem().equals(item.getId()))
                             .collect(Collectors.toList());
-                            item.addComments(list);});
+                            item.addComments(list);
+                });
 
         return result;
     }

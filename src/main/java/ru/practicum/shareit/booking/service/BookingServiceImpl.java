@@ -102,7 +102,7 @@ public class BookingServiceImpl implements BookingService {
         } else if (state.equals(Status.REJECTED)) {
             List<BookingSearch> list = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
             return list;
-        } else if (state.equals(Status.ALL)){
+        } else if (state.equals(Status.ALL)) {
             return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
         }
         throw new EntityNotFoundException("Неверный запрос");
@@ -136,7 +136,7 @@ public class BookingServiceImpl implements BookingService {
             return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
         } else if (state.equals(Status.REJECTED)) {
             return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
-        } else if (state.equals(Status.ALL)){
+        } else if (state.equals(Status.ALL)) {
             return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
         }
         throw new EntityNotFoundException("Неверный запрос");
