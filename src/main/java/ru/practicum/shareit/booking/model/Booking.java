@@ -30,14 +30,17 @@ public class Booking {
     @JoinColumn(name = "items_id")
     private Item item;
 
-    private Long itemId;
-
-
     @ManyToOne
     @JoinColumn(name = "users_id")
     private User booker;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Column(name = "item_id")
+    private Long itemId;
+
 
     public Booking() {
     }
