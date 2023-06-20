@@ -52,13 +52,20 @@ public class ItemServiceImpl implements ItemService {
 
         List<CommentDto> listCommentDto = CommentMapper.toListDto(commentRepository.findAllByItemIdAndUserId(itemId, userId));
 
-        List<Booking> bokklist = bookingRepository.findAllByItemIdAndItemOwnerIdAndStatusNot(itemId, userId, Status.REJECTED);
-        //bokklist.stream().filter(a -> a.getFinish().isBefore(LocalDateTime.now()));
-        //lastBooling это последнее добавленное а nextBooking это ближайшее по времени
-        List<UselessBooking> list = BookingMapper
-                .toListUselessBooking(bokklist);
+        List<Booking> bokklist = bookingRepository.findAllByItemIdAndItemOwnerIdAndStatusNotOrderByStart(itemId, userId, Status.REJECTED);
+        UselessBooking lastBooking = bokklist.stream()
+                .filter(a -> a.getFinish().isBefore(LocalDateTime.now()))
+                .map(BookingMapper::toUseLess)
+                .reduce((a,b) -> b)
+                .orElse(null);
 
-        itemDtoWithBooking.addBooking(list);
+        UselessBooking nextBooking = bokklist.stream()
+                .filter(a -> a.getFinish().isAfter(LocalDateTime.now()))
+                .map(BookingMapper::toUseLess)
+                .findFirst()
+                .orElse(null);
+
+        itemDtoWithBooking.addBooking(lastBooking, nextBooking);
         itemDtoWithBooking.addComments(listCommentDto);
         return itemDtoWithBooking;
     }
@@ -85,20 +92,29 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDtoWithBooking> findAllItemByUser(Long userId) {
         List<Item> listItem = itemRepository.findAllByOwnerId(userId);
-        List<Booking> list1 = bookingRepository.findAllByItemOwnerIdOrderByStart(userId);
-
-        List<UselessBooking> uList = BookingMapper.toListUselessBooking(list1);
+        List<Booking> listBooking = bookingRepository.findAllByItemOwnerIdOrderByStart(userId);
 
         List<CommentDto> listCommentDto = CommentMapper.toListDto(commentRepository.findAllByUserId(userId));
 
         List<ItemDtoWithBooking> result = ItemMapper.toListItemDtoWithBooking(listItem);
         result.stream()
-                .forEach(item -> {List<UselessBooking> list =
-                    uList.stream()
-                            .filter(a -> a.getItemId().equals(item.getId()))
-                            .collect(Collectors.toList());
-                            item.addBooking(list);
+                .forEach(item -> {
+                    UselessBooking lastBooking = listBooking.stream()
+                            .filter(a -> a.getItem().getId().equals(item.getId()))
+                            .filter(a -> a.getFinish().isBefore(LocalDateTime.now()))
+                            .reduce((a,b) -> b)
+                            .map(BookingMapper::toUseLess)
+                            .orElse(null);
+
+                    UselessBooking nextBooking = listBooking.stream()
+                            .filter(a -> a.getItem().getId().equals(item.getId()))
+                            .filter(a -> a.getFinish().isAfter(LocalDateTime.now()))
+                            .findFirst()
+                            .map(BookingMapper::toUseLess)
+                            .orElse(null);
+                    item.addBooking(lastBooking, nextBooking);
                 });
+
         result.stream()
                 .forEach(item -> {List<CommentDto> list  =
                     listCommentDto.stream()

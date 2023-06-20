@@ -26,22 +26,9 @@ public class ItemDtoWithBooking {
 
     private List<CommentDto> comments;
 
-    public void addBooking(List<UselessBooking> list) {
-        if (list.isEmpty()) {
-            lastBooking = null;
-            nextBooking = null;
-        } else if (list.size() == 1) {
-            lastBooking = new UselessBooking(0L,0L,0L);
-            lastBooking.setId(list.get(0).getId());
-            lastBooking.setBookerId(list.get(0).getBookerId());
-        } else {
-            lastBooking = new UselessBooking(0L,0L,0L);
-            nextBooking = new UselessBooking(0L,0L,0L);
-            lastBooking.setId(list.get(0).getId());
-            lastBooking.setBookerId(list.get(0).getBookerId());
-            nextBooking.setId(list.get(1).getId());
-            nextBooking.setBookerId(list.get(1).getBookerId());
-        }
+    public void addBooking(UselessBooking lastBookingNew, UselessBooking nextBookingNew) {
+        lastBooking = lastBookingNew;
+        nextBooking = nextBookingNew;
     }
 
     public void addComments(List<CommentDto> list) {
