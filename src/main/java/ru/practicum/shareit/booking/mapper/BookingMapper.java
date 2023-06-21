@@ -22,24 +22,28 @@ public class BookingMapper {
     }
 
     public BookingDto toBookingDto(Booking booking) {
+        BookingDto.BookingDtoItem item = new BookingDto.BookingDtoItem(booking.getItem().getId(), booking.getItem().getName());
+        BookingDto.BookingDtoBooker booker = new BookingDto.BookingDtoBooker(booking.getBooker().getId());
         return BookingDto.builder()
                 .id(booking.getId())
                 .start(booking.getStart())
                 .end(booking.getFinish())
                 .status(booking.getStatus())
-                .item(booking.getItem())
-                .booker(booking.getBooker())
+                .item(item)
+                .booker(booker)
                 .build();
     }
 
     public BookingDto fromBookingSearchToBookingDto(BookingSearch bookingApproved) {
+        BookingDto.BookingDtoItem item = new BookingDto.BookingDtoItem(bookingApproved.getItem().getId(), bookingApproved.getItem().getName());
+        BookingDto.BookingDtoBooker booker = new BookingDto.BookingDtoBooker(bookingApproved.getBooker().getId());
         return BookingDto.builder()
                 .id(bookingApproved.getId())
                 .start(bookingApproved.getStart())
                 .end(bookingApproved.getFinish())
                 .status(bookingApproved.getStatus())
-                .item(bookingApproved.getItem())
-                .booker(bookingApproved.getBooker())
+                .item(item)
+                .booker(booker)
                 .build();
     }
 
