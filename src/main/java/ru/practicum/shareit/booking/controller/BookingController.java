@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.marker.Marker;
 
@@ -32,7 +32,7 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public BookingDto approvedBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
                                       @PathVariable("bookingId") @Min(0) final long  bookingId,
-                                      @RequestParam(required = false) boolean approved) {
+                                      @RequestParam boolean approved) {
         Booking newBooking = bookingService.approvedBooking(userId, bookingId, approved);
         return BookingMapper.toBookingDto(newBooking);
     }
@@ -46,14 +46,14 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> findListBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
-                                            @RequestParam(required = false) Status state) {
+                                            @RequestParam(defaultValue = "ALL") State state) {
         List<BookingSearch> listBooking = bookingService.findListBooking(userId, state);
         return BookingMapper.fromBookingSearchToDtoList(listBooking);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> findOwnerBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
-                                             @RequestParam(required = false) Status state) {
+                                             @RequestParam(defaultValue = "ALL") State state) {
         List<BookingSearch> listBooking = bookingService.findListOwnerBooking(userId, state);
         return BookingMapper.fromBookingSearchToDtoList(listBooking);
     }

@@ -1,14 +1,14 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
 @AllArgsConstructor
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "items")
@@ -34,9 +34,5 @@ public class Item {
 
     @Column(name = "request")
     private Long request;
-
-    public Item() {
-
-    }
 
 }

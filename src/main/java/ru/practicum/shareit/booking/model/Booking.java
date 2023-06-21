@@ -1,18 +1,18 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 public class Booking {
 
     @Id
@@ -38,10 +38,4 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Column(name = "item_id")
-    private Long itemId;
-
-
-    public Booking() {
-    }
 }

@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.ItemService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
 
 
@@ -37,6 +39,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final CommentRepository commentRepository;
 
+    @Transactional
     @Override
     public Item createItem(Long userId, Item item) {
         item.setOwner(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь не найден")));
@@ -71,6 +74,7 @@ public class ItemServiceImpl implements ItemService {
         return itemDtoWithBooking;
     }
 
+    @Transactional
     @Override
     public Item updateItem(Long userId, Long itemId, Item item) {
         Item newItem = itemRepository.findByIdAndOwnerId(itemId, userId)
@@ -87,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
         if (available != null) {
             newItem.setAvailable(available);
         }
-        return itemRepository.save(newItem);
+        return newItem;
     }
 
     @Override
@@ -137,6 +141,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findItemSearch(newText, newText);
     }
 
+    @Transactional
     @Override
     public Comment createComment(Long userId, Long itemId, Comment newComment) {
         if (newComment.getText().isBlank()) {

@@ -5,6 +5,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.SmallBooking;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ public class BookingMapper {
 
     public Booking toBooking(BookingDto bookingDto) {
         return Booking.builder()
-                .itemId(bookingDto.getItemId())
+                .item(Item.builder().id(bookingDto.getItemId()).build())
                 .start(bookingDto.getStart())
                 .finish(bookingDto.getEnd())
                 .build();
@@ -49,7 +50,7 @@ public class BookingMapper {
     public SmallBooking toSmallBooking(Booking booking) {
         return SmallBooking.builder()
                 .id(booking.getId())
-                .itemId(booking.getItemId())
+                .itemId(booking.getItem().getId())
                 .bookerId(booking.getBooker().getId())
                 .build();
     }
