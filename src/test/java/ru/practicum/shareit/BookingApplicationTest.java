@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.ItemService.ItemService;
 import ru.practicum.shareit.item.model.Item;
@@ -49,6 +50,7 @@ public class BookingApplicationTest {
                 .item(item2)
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
+                .status(Status.WAITING)
                 .build());
         Assertions.assertNotNull(booking2);
 
