@@ -40,19 +40,19 @@ public class BookingApplicationTest {
                 .email("ssing@mail.com")
                 .build());
 
-        Item item2 = itemService.createItem(4L, Item.builder().name("оруsssжие")
+        Item item2 = itemService.createItem(1L, Item.builder().name("оруsssжие")
                 .available(true)
                 .description("могучее")
                 .build());
 
-        Booking booking2 = bookingService.postBooking(5L,  Booking.builder()
+        Booking booking2 = bookingService.postBooking(2L,  Booking.builder()
                 .item(item2)
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
                 .build());
         Assertions.assertNotNull(booking2);
 
-        Booking booking1 = bookingService.approvedBooking(4L, 2L, true);
+        Booking booking1 = bookingService.approvedBooking(1L, 1L, true);
         Assertions.assertNotNull(booking1);
 
         BookingSearch booking3 = bookingService.findBooking(1L, 1L);
