@@ -15,6 +15,7 @@ import ru.practicum.shareit.item.dao.CommentRepository;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookingAndComment;
+import ru.practicum.shareit.item.model.ItemWithBookingAndComment;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -49,9 +50,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoWithBookingAndComment findItem(Long userId, Long itemId) {
+    public ItemWithBookingAndComment findItem(Long userId, Long itemId) {
         Item item =  itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
-        ItemDtoWithBookingAndComment itemDtoWithBooking = ItemMapper.itemDtoWithBooking(item);
+        ItemWithBookingAndComment itemWithBooking = ItemMapper.itemWithBooking(item);
 
         List<CommentDto> listCommentDto = CommentMapper.toListDto(commentRepository.findAllByItemId(itemId));
 
@@ -71,9 +72,9 @@ public class ItemServiceImpl implements ItemService {
                 .findFirst()
                 .orElse(null);
 
-        itemDtoWithBooking.addBooking(lastBooking, nextBooking);
-        itemDtoWithBooking.addComments(listCommentDto);
-        return itemDtoWithBooking;
+        itemWithBooking.addBooking(lastBooking, nextBooking);
+        itemWithBooking.addComments(listCommentDto);
+        return itemWithBooking;
     }
 
     @Transactional
@@ -97,108 +98,52 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoWithBookingAndComment> findAllItemByUser(Long userId) {
-        List<Item> listItem = itemRepository.findAllByOwnerId(userId);
-        //List<Booking> listBooking = bookingRepository.findAllByItemOwnerIdOrderByStart(userId);
+    public List<ItemWithBookingAndComment> findAllItemByUser(Long userId) {
 
-        List<CommentDto> listCommentDto = CommentMapper.toListDto(commentRepository.findAllByUserId(userId));
+        List<ItemWithBookingAndComment> result = itemRepository.findAllByOwnerId(userId)
+                .stream()
+                .map(a -> ItemMapper.itemWithBooking(a))
+                .collect(Collectors.toList());
 
-        Map<Item, List<Booking>> listBooking = bookingRepository.findAllByItemOwnerIdOrderByStart(userId)
+        Map<Long, List<CommentDto>> listCommentDto = commentRepository.findAllByUserId(userId)
+                .stream()
+                .map(a -> CommentMapper.toCommentDto(a))
+                .collect(Collectors.groupingBy(c -> c.getItem(), Collectors.toList()));
+
+        Map<Long, List<Booking>> listBooking = bookingRepository.findAllByItemOwnerIdOrderByStart(userId)
 				.stream()
-                .collect(Collectors.groupingBy(Booking::getItem, Collectors.toList()));
+                .collect(Collectors.groupingBy(c -> c.getItem().getId(), Collectors.toList()));
 
-
-        List<ItemDtoWithBookingAndComment> result = ItemMapper.toListItemDtoWithBooking(listItem);
-//        List<ItemDtoWithBookingAndComment> result = List.of();
         final LocalDateTime timeNow = LocalDateTime.now();
-
-//        listItem.stream()
-//                            .forEach(item -> {
-//                                SmallBooking lastBooking = listBooking.stream()
-//                                        .filter(a -> a.getItem().equals(item))
-//                                        .filter(a -> !a.getFinish().isAfter(timeNow))
-//                                        .reduce((a, b) -> b)
-//                                        .map(BookingMapper::toSmallBooking)
-//                                        .orElse(null);
-//
-//                                SmallBooking nextBooking = listBooking.stream()
-//                                        .filter(a -> a.getItem().equals(item))
-//                                        .filter(a -> a.getFinish().isAfter(timeNow))
-//                                        .findFirst()
-//                                        .map(BookingMapper::toSmallBooking)
-//                                        .orElse(null);
-//
-//                                //itemDto.addBooking(lastBooking, nextBooking);
-//                            });
-        List<ItemDtoWithBookingAndComment> res = result.stream()
-                        .map(itemDto -> {
-                            Item item = listItem.stream()
-                                    .filter(item1 -> item1.getId().equals(itemDto.getId()))
-                                    .findFirst()
-                                    .orElse(null);
-
-                           {
-                               SmallBooking lastBooking = listBooking.get(item).stream()
-                                        .filter(a -> a.getItem().equals(item))
-                                        .filter(a -> !a.getFinish().isAfter(timeNow))
-                                        .reduce((a, b) -> b)
-                                        .map(BookingMapper::toSmallBooking)
-                                        .orElse(null);
-
-                                SmallBooking nextBooking = listBooking.get(item).stream()
-                                        .filter(a -> a.getItem().equals(item))
-                                        .filter(a -> a.getFinish().isAfter(timeNow))
-                                        .findFirst()
-                                        .map(BookingMapper::toSmallBooking)
-                                        .orElse(null);
-
-                                itemDto.addBooking(lastBooking, nextBooking);
-                                    }
-                                 return itemDto;
-
-                        })
-                                .collect(Collectors.toList());
-
-//        List<Entity1> result = entityList1.stream()
-//                .map(entity1 -> {
-//                    Entity2 matchingEntity2 = entityList2.stream()
-//                            .filter(entity2 -> entity2.getId().equals(entity1.getMatchingId()))
-//                            .findFirst()
-//                            .orElse(null);
-//                    return new Entity1(entity1.getField1(), entity1.getField2(), matchingEntity2.getField1(), matchingEntity2.getField2());
-//                })
-//                .collect(Collectors.toList());
-
-
-
-//        result.stream()
-//                .forEach(item -> {
-//                    SmallBooking lastBooking = listBooking.stream()
-//                            .filter(a -> a.getItem().getId().equals(item.getId()))
-//                            .filter(a -> !a.getFinish().isAfter(timeNow))
-//        .reduce((a,b) -> b)
-//                .map(BookingMapper::toSmallBooking)
-//                .orElse(null);
-//
-//        SmallBooking nextBooking = listBooking.stream()
-//                .filter(a -> a.getItem().getId().equals(item.getId()))
-//                .filter(a -> a.getFinish().isAfter(timeNow))
-//                .findFirst()
-//                .map(BookingMapper::toSmallBooking)
-//                .orElse(null);
-//        item.addBooking(lastBooking, nextBooking);
-//    });
 
         result.stream()
                 .forEach(item -> {
-        List<CommentDto> list  =
-                listCommentDto.stream()
-                        .filter(a -> a.getItem().equals(item.getId()))
-                        .collect(Collectors.toList());
-        item.addComments(list);
+                    SmallBooking lastBooking = listBooking.getOrDefault(item.getId(), List.of())
+                            .stream()
+                            .filter(a -> !a.getFinish().isAfter(timeNow))
+                            .reduce((a,b) -> b)
+                            .map(BookingMapper::toSmallBooking)
+                            .orElse(null);
+
+                            SmallBooking nextBooking = listBooking.getOrDefault(item.getId(), List.of())
+                             .stream()
+                             .filter(a -> a.getFinish().isAfter(timeNow))
+                             .findFirst()
+                             .map(BookingMapper::toSmallBooking)
+                             .orElse(null);
+
+                             item.addBooking(lastBooking, nextBooking);
     });
 
-        return res;
+        result.stream()
+                .forEach(item -> {
+                    List<CommentDto> list  =
+                            listCommentDto.getOrDefault(item.getId(), List.of());
+
+                    item.addComments(list);
+                });
+
+        return result;
 }
 
     @Override

@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.mapper;
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookingAndComment;
+import ru.practicum.shareit.item.model.ItemWithBookingAndComment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.dto.ItemSearch;
 
@@ -42,8 +43,24 @@ public class ItemMapper {
         return listItem.stream().map(ItemMapper::itemSerchToItemDto).collect(Collectors.toList());
     }
 
-    public ItemDtoWithBookingAndComment itemDtoWithBooking(Item item) {
+    public ItemDtoWithBookingAndComment itemDtoWithBooking(ItemWithBookingAndComment item) {
         return ItemDtoWithBookingAndComment.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .lastBooking(item.getLastBooking())
+                .nextBooking(item.getNextBooking())
+                .comments(item.getComments())
+                .build();
+    }
+
+    public List<ItemDtoWithBookingAndComment> toListItemDtoWithBooking(List<ItemWithBookingAndComment> list) {
+        return list.stream().map(ItemMapper::itemDtoWithBooking).collect(Collectors.toList());
+    }
+
+    public ItemWithBookingAndComment itemWithBooking(Item item) {
+        return ItemWithBookingAndComment.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
@@ -51,7 +68,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public List<ItemDtoWithBookingAndComment> toListItemDtoWithBooking(List<Item> list) {
-        return list.stream().map(ItemMapper::itemDtoWithBooking).collect(Collectors.toList());
+    public List<ItemWithBookingAndComment> toListItemWithBooking(List<Item> list) {
+        return list.stream().map(ItemMapper::itemWithBooking).collect(Collectors.toList());
     }
 }

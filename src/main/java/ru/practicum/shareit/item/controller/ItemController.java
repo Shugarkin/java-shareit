@@ -34,7 +34,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDtoWithBookingAndComment findItem(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId,
                                                  @PathVariable("itemId") @Min(0) final Long itemId) {
-        ItemDtoWithBookingAndComment item = itemService.findItem(userId, itemId);
+        ItemDtoWithBookingAndComment item = ItemMapper.itemDtoWithBooking(itemService.findItem(userId, itemId));
         return item;
     }
 
@@ -47,7 +47,7 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDtoWithBookingAndComment> findAllItemByUser(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId) {
-        List<ItemDtoWithBookingAndComment> listItem = itemService.findAllItemByUser(userId);
+        List<ItemDtoWithBookingAndComment> listItem = ItemMapper.toListItemDtoWithBooking(itemService.findAllItemByUser(userId));
         return listItem;
     }
 

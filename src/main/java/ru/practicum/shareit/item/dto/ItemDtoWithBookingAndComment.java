@@ -1,15 +1,13 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 import ru.practicum.shareit.booking.model.SmallBooking;
 
 import java.util.List;
 
-
-@Getter
-@Setter
+@Data
 @Builder
-@AllArgsConstructor
 public class ItemDtoWithBookingAndComment {
 
     private Long id;
@@ -25,23 +23,5 @@ public class ItemDtoWithBookingAndComment {
     private SmallBooking nextBooking;
 
     private List<CommentDto> comments;
-
-    public void addBooking(SmallBooking lastBookingNew, SmallBooking nextBookingNew) {
-        if (lastBookingNew == null) {
-            lastBooking = nextBookingNew;
-            nextBooking = null;
-        } else {
-            lastBooking = lastBookingNew;
-            nextBooking = nextBookingNew;
-        }
-    }
-
-    public void addComments(List<CommentDto> list) {
-        if (list.isEmpty()) {
-            comments = List.of();
-        } else {
-            comments = list;
-        }
-    }
 
 }
