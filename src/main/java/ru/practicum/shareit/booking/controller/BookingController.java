@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoReceived;
 import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -11,6 +12,7 @@ import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.marker.Marker;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
@@ -24,8 +26,8 @@ public class BookingController {
 
     @PostMapping
     public BookingDto postBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-                                  @Validated(Marker.Create.class) @RequestBody BookingDto booking) {
-        Booking newBooking = bookingService.postBooking(userId, BookingMapper.toBooking(booking));
+                                  @Validated(Marker.Create.class) @RequestBody @Valid BookingDtoReceived booking) {
+        Booking newBooking = bookingService.postBooking(userId, BookingMapper.fromBookingDtoReceivedToBooking(booking));
         return BookingMapper.toBookingDto(newBooking);
     }
 

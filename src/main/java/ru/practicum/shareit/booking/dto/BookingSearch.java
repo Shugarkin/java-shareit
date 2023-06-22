@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.model.Item;
@@ -14,7 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BookingSearch {
 
-    //класс нужен только для выгрузки данных из бд. наверно это лишнее, но я так и не понял почему hiber ругается на отсудтсвие конструктора
     private Long id;
 
     private LocalDateTime start;

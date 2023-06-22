@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.mapper;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentDtoReceived;
 import ru.practicum.shareit.item.model.Comment;
 
 import java.util.List;
@@ -28,6 +29,12 @@ public class CommentMapper {
         return Comment.builder()
                 .id(comment.getId())
                 .text(comment.getText())
+                .build();
+    }
+
+    public Comment fromCommentDtoReceivedToComment(CommentDtoReceived commentDtoReceived) {
+        return Comment.builder()
+                .text(commentDtoReceived.getText())
                 .build();
     }
 }

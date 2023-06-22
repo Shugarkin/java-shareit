@@ -4,16 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.ItemService.ItemService;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithBookingAndComment;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.dto.ItemSearch;
 import ru.practicum.shareit.marker.Marker;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
@@ -62,8 +60,8 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId,
                                     @PathVariable("itemId") @Min(0) final Long itemId,
-                                    @Validated({Marker.Update.class}) @RequestBody CommentDto newComment) {
-        Comment comment = itemService.createComment(userId, itemId, CommentMapper.toComment(newComment));
+                                    @Validated({Marker.Update.class}) @RequestBody CommentDtoReceived newComment) {
+        Comment comment = itemService.createComment(userId, itemId, CommentMapper.fromCommentDtoReceivedToComment(newComment));
         return CommentMapper.toCommentDto(comment);
     }
 

@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ItemSearch {
-    //тоже самое, класс тольео для выгрузки из бд
 
     private Long id;
 
