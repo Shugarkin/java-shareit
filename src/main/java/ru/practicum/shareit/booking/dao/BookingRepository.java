@@ -2,13 +2,11 @@ package ru.practicum.shareit.booking.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,13 +35,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     boolean existsByItemOwnerIdOrBookerId(Long userId, Long userId1);
 
     List<Booking> findAllByItemOwnerIdOrderByStart(Long userId);
-
-//    @Query(value = "select * " +
-//            "from booking as b join items as it on b.items_id = it.item_id " +
-//            "join users as u on b.users_id = u.user_id " +
-//            "where b.items_id = ?1 and b.users_id = ?2 and b.status = ?3 and b.finish < now() " +
-//            "limit 1", nativeQuery = true)
-//    Optional<BookingSearch> findFirstByItemIdAndBookerIdAndStatus(Long itemId, Long userId, Status status);
 
     List<BookingSearch> findAllByBookerIdOrderByStartDesc(long userId);
 
@@ -80,4 +71,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByItemIdAndItemOwnerIdAndStatusOrderByStart(Long itemId, Long userId, Status status);
 
     Optional<BookingSearch> findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(Long itemId, Long userId, Status status, LocalDateTime timeNow);
+
 }

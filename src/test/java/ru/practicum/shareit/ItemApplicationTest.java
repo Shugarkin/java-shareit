@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.dto.ItemDtoWithBookingAndComment;
 import ru.practicum.shareit.item.dto.ItemSearch;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemWithBookingAndComment;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -46,17 +47,17 @@ public class ItemApplicationTest {
                 .build());
 
         Booking booking = bookingService.postBooking(2L,  Booking.builder()
-                .itemId(1L)
+                .item(item)
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
                 .build());
 
         Assertions.assertNotNull(item);
 
-        ItemDtoWithBookingAndComment newItem = itemService.findItem(2L, 1L);
+        ItemWithBookingAndComment newItem = itemService.findItem(2L, 1L);
         Assertions.assertNotNull(newItem);
 
-        List<ItemDtoWithBookingAndComment> listItem = itemService.findAllItemByUser(2L);
+        List<ItemWithBookingAndComment> listItem = itemService.findAllItemByUser(2L);
         Assertions.assertNotNull(listItem);
 
         Item upItem = itemService.updateItem(1L, 1L, Item.builder().name("огромное оружие").build());

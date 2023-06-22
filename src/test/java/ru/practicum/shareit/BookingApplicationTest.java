@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.ItemService.ItemService;
 import ru.practicum.shareit.item.model.Item;
@@ -45,7 +46,7 @@ public class BookingApplicationTest {
                 .build());
 
         Booking booking2 = bookingService.postBooking(5L,  Booking.builder()
-                .itemId(2L)
+                .item(item2)
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
                 .build());
@@ -57,10 +58,10 @@ public class BookingApplicationTest {
         BookingSearch booking3 = bookingService.findBooking(1L, 1L);
         Assertions.assertNotNull(booking3);
 
-        List<BookingSearch> list = bookingService.findListBooking(1L, null);
+        List<BookingSearch> list = bookingService.findListBooking(1L, State.ALL);
         Assertions.assertNotNull(list);
 
-        List<BookingSearch> list1 = bookingService.findListOwnerBooking(2L, null);
+        List<BookingSearch> list1 = bookingService.findListOwnerBooking(2L, State.ALL);
         Assertions.assertNotNull(list1);
     }
 

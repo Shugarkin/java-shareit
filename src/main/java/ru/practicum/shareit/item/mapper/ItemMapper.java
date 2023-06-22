@@ -67,8 +67,4 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .build();
     }
-
-    public List<ItemWithBookingAndComment> toListItemWithBooking(List<Item> list) {
-        return list.stream().map(ItemMapper::itemWithBooking).collect(Collectors.toList());
-    }
 }

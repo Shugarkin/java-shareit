@@ -11,7 +11,6 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.marker.Marker;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
