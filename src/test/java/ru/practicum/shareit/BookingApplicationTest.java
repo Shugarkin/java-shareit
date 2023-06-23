@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.ItemService.ItemService;
 import ru.practicum.shareit.item.model.Item;
@@ -40,22 +41,44 @@ public class BookingApplicationTest {
                 .email("ssing@mail.com")
                 .build());
 
-        Item item2 = itemService.createItem(4L, Item.builder().name("оруsssжие")
+        User user6 = userService.createUser(User.builder()
+                .name("Викинг")
+                .email("kssss@mail.com")
+                .build());
+
+        User user7 = userService.createUser(User.builder()
+                .name("Викинг")
+                .email("ssg@mail.com")
+                .build());
+
+        Item item2 = itemService.createItem(1L, Item.builder().name("оруsssжие")
                 .available(true)
                 .description("могучее")
                 .build());
 
-        Booking booking2 = bookingService.postBooking(5L,  Booking.builder()
-                .item(item2)
+        Item item3 = itemService.createItem(3L, Item.builder().name("оруssие")
+                .available(true)
+                .description("могучее++")
+                .build());
+
+        Booking booking1 = bookingService.postBooking(2L,  Booking.builder()
+                .item(item3)
+                .start(LocalDateTime.now())
+                .finish(LocalDateTime.now().plusNanos(1))
+                .status(Status.WAITING)
+                .build());
+        Assertions.assertNotNull(booking1);
+
+        Booking booking2 = bookingService.postBooking(4L,  Booking.builder()
+                .item(item3)
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
                 .build());
+
+        Booking booking3 = bookingService.approvedBooking(3L, 2L, true);
         Assertions.assertNotNull(booking2);
 
-        Booking booking1 = bookingService.approvedBooking(4L, 2L, true);
-        Assertions.assertNotNull(booking1);
-
-        BookingSearch booking3 = bookingService.findBooking(1L, 1L);
+        BookingSearch booking4 = bookingService.findBooking(3L, 2L);
         Assertions.assertNotNull(booking3);
 
         List<BookingSearch> list = bookingService.findListBooking(1L, State.ALL);
