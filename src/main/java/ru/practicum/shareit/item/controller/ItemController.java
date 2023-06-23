@@ -59,7 +59,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId,
                                     @PathVariable("itemId") @Min(0) final Long itemId,
-                                    @Validated({Marker.Update.class}) @RequestBody CommentDtoReceived newComment) {
+                                    @Validated({Marker.Create.class}) @RequestBody CommentDtoReceived newComment) {
         Comment comment = itemService.createComment(userId, itemId, CommentMapper.fromCommentDtoReceivedToComment(newComment));
         return CommentMapper.toCommentDto(comment);
     }

@@ -33,7 +33,7 @@ public class BookingServiceImpl implements BookingService {
         Item item = itemRepository.findById(booking.getItem().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
         if (item.getAvailable().equals(false)) {
-            throw new AvailableException("Предмет не доступен для брони"); //не понятно почему в тестах есть разделение на эти две ошибки
+            throw new AvailableException("Предмет не доступен для брони"); 
         }
         if (item.getOwner().getId().equals(userId)) {
             throw new EntityNotFoundException("Раздюпать вещь не получится");
@@ -73,48 +73,43 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingSearch> findListBooking(long userId, State state) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Юзер не найден"));
-        if (state.equals(State.CURRENT)) {
-            List<BookingSearch> list = bookingRepository.findAllByBookerIdAndStateCurrent(userId);
-            return list;
-        } else if (state.equals(State.PAST)) {
-            List<BookingSearch> list = bookingRepository.findAllByBookerIdAndStatePast(userId, Status.APPROVED);
-            return list;
-        } else if (state.equals(State.FUTURE)) {
-            List<BookingSearch> list = bookingRepository.findAllByBookerIdAndStateFuture(userId);
-            return list;
-        } else if (state.equals(State.WAITING)) {
-            List<BookingSearch> list = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
-            return list;
-        } else if (state.equals(State.REJECTED)) {
-            List<BookingSearch> list = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
-            return list;
-        } else if (state.equals(State.ALL)) {
-            return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
+        switch (state) {
+            case CURRENT:
+                return bookingRepository.findAllByBookerIdAndStateCurrent(userId);
+            case PAST:
+                return bookingRepository.findAllByBookerIdAndStatePast(userId, Status.APPROVED);
+            case FUTURE:
+                return bookingRepository.findAllByBookerIdAndStateFuture(userId);
+            case WAITING:
+                return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
+            case REJECTED:
+                return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
+            case ALL:
+                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
+            default:
+                throw new EntityNotFoundException("Неверный запрос");
         }
-        throw new EntityNotFoundException("Неверный запрос");
-
     }
 
     @Override
     public List<BookingSearch> findListOwnerBooking(long userId, State state) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Юзер не найден"));
-        if (state.equals(State.CURRENT)) {
-            List<BookingSearch> list = bookingRepository.findAllByItemOwnerAndStateCurrent(userId);
-            return list;
-        } else if (state.equals(State.PAST)) {
-            List<BookingSearch> list =  bookingRepository.findAllByItemOwnerIdAndStatePast(userId, Status.APPROVED);
-            return list;
-        } else if (state.equals(State.FUTURE)) {
-            List<BookingSearch> list =  bookingRepository.findAllByItemOwnerIdAndStateFuture(userId, Status.REJECTED);
-            return list;
-        } else if (state.equals(State.WAITING)) {
-            return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
-        } else if (state.equals(State.REJECTED)) {
-            return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
-        } else if (state.equals(State.ALL)) {
-            return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
+        switch (state) {
+            case CURRENT:
+                return bookingRepository.findAllByItemOwnerAndStateCurrent(userId);
+            case PAST:
+                return bookingRepository.findAllByItemOwnerIdAndStatePast(userId, Status.APPROVED);
+            case FUTURE:
+                return bookingRepository.findAllByItemOwnerIdAndStateFuture(userId, Status.REJECTED);
+            case WAITING:
+                return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING);
+            case REJECTED:
+                return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
+            case ALL:
+                return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
+            default:
+                throw new EntityNotFoundException("Неверный запрос");
         }
-        throw new EntityNotFoundException("Неверный запрос");
     }
 
 }

@@ -14,6 +14,7 @@ import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dao.CommentRepository;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.model.CommentReceiving;
 import ru.practicum.shareit.item.model.ItemWithBookingAndComment;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -53,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
         Item item =  itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
         ItemWithBookingAndComment itemWithBooking = ItemMapper.itemWithBooking(item);
 
-        List<CommentDto> listCommentDto = CommentMapper.toListDto(commentRepository.findAllByItemId(itemId));
+        List<CommentReceiving> listCommentDto = CommentMapper.toListCommentReceiving(commentRepository.findAllByItemId(itemId));
 
         List<Booking> bokklist = bookingRepository.findAllByItemIdAndItemOwnerIdAndStatusOrderByStart(itemId, userId, Status.APPROVED);
 
@@ -104,9 +105,9 @@ public class ItemServiceImpl implements ItemService {
                 .map(a -> ItemMapper.itemWithBooking(a))
                 .collect(Collectors.toList());
 
-        Map<Long, List<CommentDto>> listCommentDto = commentRepository.findAllByUserId(userId)
+        Map<Long, List<CommentReceiving>> listCommentDto = commentRepository.findAllByUserId(userId)
                 .stream()
-                .map(a -> CommentMapper.toCommentDto(a))
+                .map(a -> CommentMapper.fromCommentToCommentReceiving(a))
                 .collect(Collectors.groupingBy(c -> c.getItem(), Collectors.toList()));
 
         Map<Long, List<Booking>> listBooking = bookingRepository.findAllByItemOwnerIdOrderByStart(userId)
@@ -136,7 +137,7 @@ public class ItemServiceImpl implements ItemService {
 
         result.stream()
                 .forEach(item -> {
-                    List<CommentDto> list  =
+                    List<CommentReceiving> list  =
                             listCommentDto.getOrDefault(item.getId(), List.of());
 
                     item.addComments(list);
@@ -156,16 +157,10 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public Comment createComment(Long userId, Long itemId, Comment newComment) {
-        if (newComment.getText().isBlank()) {
-            throw new CommentException("Комментарий не может быть пустым");
-        }
         final LocalDateTime timeNow = LocalDateTime.now();
         BookingSearch booking = bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
                         Status.APPROVED, timeNow)
                 .orElseThrow(() -> new CommentException("Пользователь не бронировал вещь"));
-        //по вашему предложению использовать exists - я думаю, что нужно достать сам объект, ибо в ответе нам требуется имя автора
-        // комментария, а его можно получить или из booking или делает еще один запрос на получение пользователя
-        //хотя возможно я как обычно ошибаюсь
             Comment comment = Comment.builder()
                     .item(booking.getItem())
                     .create(LocalDateTime.now())

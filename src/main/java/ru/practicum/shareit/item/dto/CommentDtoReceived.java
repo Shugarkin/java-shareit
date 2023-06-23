@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 public class CommentDtoReceived {
 
     @NotBlank(groups = {Marker.Create.class})
-    @Size(min = 1, max = 20, groups = {Marker.Create.class})
+    @Size(min = 1, max = 100, groups = {Marker.Create.class})
     private String text;
 
 

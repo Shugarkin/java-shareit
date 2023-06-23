@@ -51,7 +51,7 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .lastBooking(item.getLastBooking())
                 .nextBooking(item.getNextBooking())
-                .comments(item.getComments())
+                .comments(CommentMapper.commentDtoList(item.getComments()))
                 .build();
     }
 

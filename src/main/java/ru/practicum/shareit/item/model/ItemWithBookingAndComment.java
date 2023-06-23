@@ -25,7 +25,7 @@ public class ItemWithBookingAndComment {
 
     private SmallBooking nextBooking;
 
-    private List<CommentDto> comments;
+    private List<CommentReceiving> comments;
 
     public void addBooking(SmallBooking lastBookingNew, SmallBooking nextBookingNew) {
         if (lastBookingNew == null) {
@@ -37,7 +37,7 @@ public class ItemWithBookingAndComment {
         }
     }
 
-    public void addComments(List<CommentDto> list) {
+    public void addComments(List<CommentReceiving> list) {
         if (list.isEmpty()) {
             comments = List.of();
         } else {
