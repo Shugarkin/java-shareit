@@ -33,7 +33,7 @@ public class BookingServiceImpl implements BookingService {
         Item item = itemRepository.findById(booking.getItem().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
         if (item.getAvailable().equals(false)) {
-            throw new AvailableException("Предмет не доступен для брони"); 
+            throw new AvailableException("Предмет не доступен для брони");
         }
         if (item.getOwner().getId().equals(userId)) {
             throw new EntityNotFoundException("Раздюпать вещь не получится");

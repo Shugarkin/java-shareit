@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import ru.practicum.shareit.booking.model.SmallBooking;
-import ru.practicum.shareit.item.dto.CommentDto;
 
 import java.util.List;
 
