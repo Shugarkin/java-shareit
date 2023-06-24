@@ -60,7 +60,6 @@ public class ItemApplicationTest {
     @Test
     public void test() {
 
-
         ItemWithBookingAndComment newItem = itemService.findItem(2L, 1L);
         Assertions.assertNotNull(newItem);
 
