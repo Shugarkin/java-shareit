@@ -1,16 +1,18 @@
 package ru.practicum.shareit;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.ItemService.ItemService;
-import ru.practicum.shareit.item.dto.ItemSearch;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemWithBookingAndComment;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -19,7 +21,7 @@ import java.util.List;
 
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class ItemApplicationTest {
+public class BookingApplicationTest {
 
     private final ItemService itemService;
 
@@ -35,19 +37,21 @@ public class ItemApplicationTest {
 
     private Booking booking;
 
+
     @BeforeEach
     public void before() {
         user = userService.createUser(User.builder()
                 .name("Викинг")
-                .email("vikssssing@mail.com")
+                .email("vikssss@mail.com")
                 .build());
 
         user1 = userService.createUser(User.builder()
                 .name("Викинг")
-                .email("ssssing@mail.com")
+                .email("ssing@mail.com")
                 .build());
 
-        item = itemService.createItem(user.getId(), Item.builder().name("оружие")
+
+        item = itemService.createItem(user.getId(), Item.builder().name("оруsssжие")
                 .available(true)
                 .description("могучее")
                 .build());
@@ -57,6 +61,7 @@ public class ItemApplicationTest {
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
                 .build());
+
     }
 
     @AfterEach
@@ -68,21 +73,16 @@ public class ItemApplicationTest {
     @Test
     public void test() {
 
-        ItemWithBookingAndComment newItem = itemService.findItem(user.getId(), item.getId());
-        Assertions.assertNotNull(newItem);
+        BookingSearch booking1 = bookingService.findBooking(user1.getId(), booking.getId());
+        Assertions.assertNotNull(booking1);
 
-        List<ItemWithBookingAndComment> listItem = itemService.findAllItemByUser(user.getId());
-        Assertions.assertNotNull(listItem);
+        Booking booking2 = bookingService.approvedBooking(user.getId(), booking.getId(), true);
 
-        Item upItem = itemService.updateItem(user.getId(), item.getId(), Item.builder().name("огромное оружие").build());
-        Assertions.assertNotNull(upItem);
+        List<BookingSearch> list = bookingService.findListBooking(user1.getId(), State.ALL);
+        Assertions.assertNotNull(list);
 
-        List<ItemSearch> newList = itemService.search(user.getId(), "оружие");
-        Assertions.assertNotNull(newList);
-
-        bookingService.approvedBooking(user.getId(), booking.getId(), true);
-
-        Comment comment = itemService.createComment(user1.getId(), item.getId(), Comment.builder().text("все хорошо").build());
-        Assertions.assertNotNull(comment);
+        List<BookingSearch> list1 = bookingService.findListOwnerBooking(user.getId(), State.ALL);
+        Assertions.assertNotNull(list1);
     }
+
 }
