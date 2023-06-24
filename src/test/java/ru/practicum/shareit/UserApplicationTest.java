@@ -1,6 +1,7 @@
 package ru.practicum.shareit;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,11 @@ import java.util.List;
 public class UserApplicationTest {
 
     private final UserService userService;
+
+    @AfterEach
+    public void after() {
+        userService.deleteUser(1L);
+    }
 
     @Test
     public void test() {
