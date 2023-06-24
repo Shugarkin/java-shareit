@@ -1,8 +1,7 @@
 package ru.practicum.shareit;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.booking.model.Booking;
@@ -28,8 +27,8 @@ public class ItemApplicationTest {
 
     private final BookingService bookingService;
 
-    @Test
-    public void test() {
+    @BeforeEach
+    public void before() {
         User user2 = userService.createUser(User.builder()
                 .name("Викинг")
                 .email("vikssssing@mail.com")
@@ -40,18 +39,27 @@ public class ItemApplicationTest {
                 .email("ssssing@mail.com")
                 .build());
 
-        Item item = itemService.createItem(1L, Item.builder().name("оружие")
+        Item item = itemService.createItem(2L, Item.builder().name("оружие")
                 .available(true)
                 .description("могучее")
                 .build());
 
-        Booking booking = bookingService.postBooking(2L,  Booking.builder()
+        Booking booking = bookingService.postBooking(1L,  Booking.builder()
                 .item(item)
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
                 .build());
+    }
 
-        Assertions.assertNotNull(item);
+    @AfterEach
+    public void after() {
+        userService.deleteUser(1L);
+        userService.deleteUser(2L);
+    }
+
+    @Test
+    public void test() {
+
 
         ItemWithBookingAndComment newItem = itemService.findItem(2L, 1L);
         Assertions.assertNotNull(newItem);
@@ -59,15 +67,15 @@ public class ItemApplicationTest {
         List<ItemWithBookingAndComment> listItem = itemService.findAllItemByUser(2L);
         Assertions.assertNotNull(listItem);
 
-        Item upItem = itemService.updateItem(1L, 1L, Item.builder().name("огромное оружие").build());
+        Item upItem = itemService.updateItem(2L, 1L, Item.builder().name("огромное оружие").build());
         Assertions.assertNotNull(upItem);
 
         List<ItemSearch> newList = itemService.search(1L, "оружие");
         Assertions.assertNotNull(newList);
 
-        bookingService.approvedBooking(1L, 1L, true);
+        bookingService.approvedBooking(2L, 1L, true);
 
-        Comment comment = itemService.createComment(2L, 1L, Comment.builder().text("все хорошо").build());
+        Comment comment = itemService.createComment(1L, 1L, Comment.builder().text("все хорошо").build());
         Assertions.assertNotNull(comment);
     }
 }

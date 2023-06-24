@@ -1,7 +1,9 @@
 package ru.practicum.shareit;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +13,9 @@ import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.ItemService.ItemService;
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemWithBookingAndComment;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -28,9 +32,8 @@ public class BookingApplicationTest {
 
     private final BookingService bookingService;
 
-    @Test
-    public void test() {
-
+    @BeforeEach
+    public void before() {
         User user4 = userService.createUser(User.builder()
                 .name("Викинг")
                 .email("vikssss@mail.com")
@@ -41,50 +44,36 @@ public class BookingApplicationTest {
                 .email("ssing@mail.com")
                 .build());
 
-        User user6 = userService.createUser(User.builder()
-                .name("Викинг")
-                .email("kssss@mail.com")
-                .build());
-
-        User user7 = userService.createUser(User.builder()
-                .name("Викинг")
-                .email("ssg@mail.com")
-                .build());
-
-        Item item2 = itemService.createItem(1L, Item.builder().name("оруsssжие")
+        Item item = itemService.createItem(1L, Item.builder().name("оруsssжие")
                 .available(true)
                 .description("могучее")
                 .build());
 
-        Item item3 = itemService.createItem(3L, Item.builder().name("оруssие")
-                .available(true)
-                .description("могучее++")
-                .build());
-
-        Booking booking1 = bookingService.postBooking(2L,  Booking.builder()
-                .item(item3)
-                .start(LocalDateTime.now())
-                .finish(LocalDateTime.now().plusNanos(1))
-                .status(Status.WAITING)
-                .build());
-        Assertions.assertNotNull(booking1);
-
-        Booking booking2 = bookingService.postBooking(4L,  Booking.builder()
-                .item(item3)
+        Booking booking = bookingService.postBooking(2L,  Booking.builder()
+                .item(item)
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
                 .build());
+    }
 
-        Booking booking3 = bookingService.approvedBooking(3L, 2L, true);
-        Assertions.assertNotNull(booking2);
+    @AfterEach
+    public void after() {
+        userService.deleteUser(1L);
+        userService.deleteUser(2L);
+    }
 
-        BookingSearch booking4 = bookingService.findBooking(3L, 2L);
-        Assertions.assertNotNull(booking3);
+    @Test
+    public void test() {
 
-        List<BookingSearch> list = bookingService.findListBooking(1L, State.ALL);
+        BookingSearch booking = bookingService.findBooking(1L, 1L);
+        Assertions.assertNotNull(booking);
+
+        Booking booking3 = bookingService.approvedBooking(1L, 1L, true);
+
+        List<BookingSearch> list = bookingService.findListBooking(2L, State.ALL);
         Assertions.assertNotNull(list);
 
-        List<BookingSearch> list1 = bookingService.findListOwnerBooking(2L, State.ALL);
+        List<BookingSearch> list1 = bookingService.findListOwnerBooking(1L, State.ALL);
         Assertions.assertNotNull(list1);
     }
 
