@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS items (
     owner BIGINT                                    NOT NULL,
     request BIGINT,
     CONSTRAINT pk_items PRIMARY KEY (item_id),
-    CONSTRAINT fk_items_users FOREIGN KEY (owner) REFERENCES users(user_id),
-    CONSTRAINT fk_item_item_request FOREIGN KEY (request) REFERENCES item_request(item_request_id)
+    CONSTRAINT fk_items_users FOREIGN KEY (owner) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_item_item_request FOREIGN KEY (request) REFERENCES item_request(item_request_id) ON DELETE CASCADE
 );
 
 CREATE TYPE IF NOT EXISTS status_enum as ENUM('WAITING', 'APPROVED', 'REJECTED', 'CANCELED');
@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS booking (
     users_id BIGINT                                    NOT NULL,
     status status_enum                                 NOT NULL,
     CONSTRAINT pk_booking PRIMARY KEY (booking_id),
-    CONSTRAINT fk_booking_item FOREIGN KEY (items_id) REFERENCES items(item_id),
-    CONSTRAINT fk_booking_user FOREIGN KEY (users_id) REFERENCES users(user_id)
+    CONSTRAINT fk_booking_item FOREIGN KEY (items_id) REFERENCES items(item_id) ON DELETE CASCADE,
+    CONSTRAINT fk_booking_user FOREIGN KEY (users_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comments (
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS comments (
     user_id BIGINT                                      NOT NULL,
     created TIMESTAMP WITHOUT TIME ZONE                 NOT NULL,
     CONSTRAINT pk_comments PRIMARY KEY (comment_id),
-    CONSTRAINT fk_comments_item FOREIGN KEY (item_id) REFERENCES items(item_id),
-    CONSTRAINT fk_comments_user FOREIGN KEY (user_id) REFERENCES users(user_id)
+    CONSTRAINT fk_comments_item FOREIGN KEY (item_id) REFERENCES items(item_id) ON DELETE CASCADE,
+    CONSTRAINT fk_comments_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
