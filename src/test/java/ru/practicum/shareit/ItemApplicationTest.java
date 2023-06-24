@@ -27,24 +27,32 @@ public class ItemApplicationTest {
 
     private final BookingService bookingService;
 
+    private User user;
+
+    private User user1;
+
+    private Item item;
+
+    private Booking booking;
+
     @BeforeEach
     public void before() {
-        User user2 = userService.createUser(User.builder()
+        user = userService.createUser(User.builder()
                 .name("Викинг")
                 .email("vikssssing@mail.com")
                 .build());
 
-        User user3 = userService.createUser(User.builder()
+        user1 = userService.createUser(User.builder()
                 .name("Викинг")
                 .email("ssssing@mail.com")
                 .build());
 
-        Item item = itemService.createItem(2L, Item.builder().name("оружие")
+        item = itemService.createItem(user.getId(), Item.builder().name("оружие")
                 .available(true)
                 .description("могучее")
                 .build());
 
-        Booking booking = bookingService.postBooking(1L,  Booking.builder()
+        booking = bookingService.postBooking(user1.getId(),  Booking.builder()
                 .item(item)
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
@@ -53,28 +61,28 @@ public class ItemApplicationTest {
 
     @AfterEach
     public void after() {
-        userService.deleteUser(1L);
-        userService.deleteUser(2L);
+        userService.deleteUser(user.getId());
+        userService.deleteUser(user1.getId());
     }
 
     @Test
     public void test() {
 
-        ItemWithBookingAndComment newItem = itemService.findItem(2L, 1L);
+        ItemWithBookingAndComment newItem = itemService.findItem(user.getId(), item.getId());
         Assertions.assertNotNull(newItem);
 
-        List<ItemWithBookingAndComment> listItem = itemService.findAllItemByUser(2L);
+        List<ItemWithBookingAndComment> listItem = itemService.findAllItemByUser(user.getId());
         Assertions.assertNotNull(listItem);
 
-        Item upItem = itemService.updateItem(2L, 1L, Item.builder().name("огромное оружие").build());
+        Item upItem = itemService.updateItem(user.getId(), item.getId(), Item.builder().name("огромное оружие").build());
         Assertions.assertNotNull(upItem);
 
-        List<ItemSearch> newList = itemService.search(1L, "оружие");
+        List<ItemSearch> newList = itemService.search(user.getId(), "оружие");
         Assertions.assertNotNull(newList);
 
-        bookingService.approvedBooking(2L, 1L, true);
+        bookingService.approvedBooking(user.getId(), booking.getId(), true);
 
-        Comment comment = itemService.createComment(1L, 1L, Comment.builder().text("все хорошо").build());
+        Comment comment = itemService.createComment(user1.getId(), item.getId(), Comment.builder().text("все хорошо").build());
         Assertions.assertNotNull(comment);
     }
 }

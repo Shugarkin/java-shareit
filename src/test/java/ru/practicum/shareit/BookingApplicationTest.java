@@ -29,48 +29,59 @@ public class BookingApplicationTest {
 
     private final BookingService bookingService;
 
+    private User user;
+
+    private User user1;
+
+    private Item item;
+
+    private Booking booking;
+
+
     @BeforeEach
     public void before() {
-        User user4 = userService.createUser(User.builder()
+        user = userService.createUser(User.builder()
                 .name("Викинг")
                 .email("vikssss@mail.com")
                 .build());
 
-        User user5 = userService.createUser(User.builder()
+        user1 = userService.createUser(User.builder()
                 .name("Викинг")
                 .email("ssing@mail.com")
                 .build());
 
-        Item item = itemService.createItem(1L, Item.builder().name("оруsssжие")
+
+        item = itemService.createItem(user.getId(), Item.builder().name("оруsssжие")
                 .available(true)
                 .description("могучее")
                 .build());
 
-        Booking booking = bookingService.postBooking(2L,  Booking.builder()
+        booking = bookingService.postBooking(user1.getId(),  Booking.builder()
                 .item(item)
                 .start(LocalDateTime.now())
                 .finish(LocalDateTime.now().plusNanos(1))
                 .build());
+
     }
 
     @AfterEach
     public void after() {
-        userService.deleteUser(1L);
-        userService.deleteUser(2L);
+        userService.deleteUser(user.getId());
+        userService.deleteUser(user1.getId());
     }
 
     @Test
     public void test() {
 
-        BookingSearch booking = bookingService.findBooking(1L, 1L);
-        Assertions.assertNotNull(booking);
+        BookingSearch booking1 = bookingService.findBooking(user1.getId(), booking.getId());
+        Assertions.assertNotNull(booking1);
 
-        Booking booking3 = bookingService.approvedBooking(1L, 1L, true);
+        Booking booking2 = bookingService.approvedBooking(user.getId(), booking.getId(), true);
 
-        List<BookingSearch> list = bookingService.findListBooking(2L, State.ALL);
+        List<BookingSearch> list = bookingService.findListBooking(user1.getId(), State.ALL);
         Assertions.assertNotNull(list);
 
-        List<BookingSearch> list1 = bookingService.findListOwnerBooking(1L, State.ALL);
+        List<BookingSearch> list1 = bookingService.findListOwnerBooking(user.getId(), State.ALL);
         Assertions.assertNotNull(list1);
     }
 
