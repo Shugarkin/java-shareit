@@ -43,6 +43,10 @@ public class ItemMapper {
         return listItem.stream().map(ItemMapper::itemSerchToItemDto).collect(Collectors.toList());
     }
 
+    public List<ItemDto> toListItemInItemDto(List<Item> listItem) {
+        return listItem.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    }
+
     public ItemDtoWithBookingAndComment itemDtoWithBooking(ItemWithBookingAndComment item) {
         return ItemDtoWithBookingAndComment.builder()
                 .id(item.getId())

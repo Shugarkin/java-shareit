@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
         Item item =  itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
         ItemWithBookingAndComment itemWithBooking = ItemMapper.itemWithBooking(item);
 
-        List<CommentReceiving> listCommentDto = CommentMapper.toListCommentReceiving(commentRepository.findAllByItemId(itemId));
+        List<CommentReceiving> listComment = CommentMapper.toListCommentReceiving(commentRepository.findAllByItemId(itemId));
 
         List<Booking> bokklist = bookingRepository.findAllByItemIdAndItemOwnerIdAndStatusOrderByStart(itemId, userId, Status.APPROVED);
 
@@ -72,7 +72,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElse(null);
 
         itemWithBooking.addBooking(lastBooking, nextBooking);
-        itemWithBooking.addComments(listCommentDto);
+        itemWithBooking.addComments(listComment);
         return itemWithBooking;
     }
 
@@ -104,7 +104,7 @@ public class ItemServiceImpl implements ItemService {
                 .map(a -> ItemMapper.itemWithBooking(a))
                 .collect(Collectors.toList());
 
-        Map<Long, List<CommentReceiving>> listCommentDto = commentRepository.findAllByUserId(userId)
+        Map<Long, List<CommentReceiving>> listComment = commentRepository.findAllByUserId(userId)
                 .stream()
                 .map(a -> CommentMapper.fromCommentToCommentReceiving(a))
                 .collect(Collectors.groupingBy(c -> c.getItem(), Collectors.toList()));
@@ -137,7 +137,7 @@ public class ItemServiceImpl implements ItemService {
         result.stream()
                 .forEach(item -> {
                     List<CommentReceiving> list  =
-                            listCommentDto.getOrDefault(item.getId(), List.of());
+                            listComment.getOrDefault(item.getId(), List.of());
 
                     item.addComments(list);
                 });

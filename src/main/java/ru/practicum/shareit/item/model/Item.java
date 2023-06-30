@@ -34,6 +34,6 @@ public class Item {
     private User owner;
 
     @Column(name = "request")
-    private Long request;
+    private Long requestId;
 
 }

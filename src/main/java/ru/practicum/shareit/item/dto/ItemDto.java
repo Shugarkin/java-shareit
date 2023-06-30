@@ -24,4 +24,6 @@ public class ItemDto {
 
     @NotNull(groups = Marker.Create.class)
     private Boolean available;
+
+    private Long requestId;
 }
