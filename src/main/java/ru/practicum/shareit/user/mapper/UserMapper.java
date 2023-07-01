@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 @UtilityClass
 public class UserMapper {
 
-    public UserDto toItemDto(User user) {
+    public UserDto toUserDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -15,7 +15,7 @@ public class UserMapper {
                 .build();
     }
 
-    public User toItem(UserDto user) {
+    public User toUser(UserDto user) {
         return User.builder()
                 .id(user.getId())
                 .email(user.getEmail())

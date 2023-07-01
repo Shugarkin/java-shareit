@@ -56,5 +56,15 @@ public class CommentMapper {
         return list.stream().map(CommentMapper:: fromCommentRecrivingToCommentDto).collect(Collectors.toList());
     }
 
+    public CommentDtoReceived toCommentDtoReceivedFromComment(Comment comment) {
+        return CommentDtoReceived.builder()
+                .text(comment.getText())
+                .build();
+    }
 
+    public Comment a(CommentDtoReceived comment) {
+        return Comment.builder()
+                .text(comment.getText())
+                .build();
+    }
 }
