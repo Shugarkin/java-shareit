@@ -113,11 +113,11 @@ public class ItemControllerTest {
         User user = User.builder().name("fdfds").build();
 
         CommentDtoReceived commentReceiving = CommentDtoReceived.builder().text("asd").build();
-        Comment comment = CommentMapper.a(commentReceiving);
+        Comment comment = CommentMapper.toCommentFromCommentDtoReceived(commentReceiving);
         comment.setItem(item);
         comment.setUser(user);
 
-        Comment commentToMatch = CommentMapper.a(commentReceiving);
+        Comment commentToMatch = CommentMapper.toCommentFromCommentDtoReceived(commentReceiving);
 
         CommentDto commentDtoToMatch = CommentMapper.toCommentDto(comment);
 

@@ -5,27 +5,37 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.internal.matchers.Equals;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.dao.BookingRepository;
+import ru.practicum.shareit.booking.dto.BookingSearch;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.exception.CommentException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.ItemService.ItemServiceImpl;
 import ru.practicum.shareit.item.dao.CommentRepository;
 import ru.practicum.shareit.item.dao.ItemRepository;
+import ru.practicum.shareit.item.dto.ItemSearch;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.CommentReceiving;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemWithBookingAndComment;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceImplTest {
@@ -118,8 +128,93 @@ public class ItemServiceImplTest {
         when(itemRepository.findByIdAndOwnerId(itemId, userId)).thenThrow(EntityNotFoundException.class);
 
         assertThrows(EntityNotFoundException.class, () -> itemService.updateItem(userId, itemId, item));
+        verify(itemRepository, Mockito.never()).save(item);
     }
 
+    @Test
+    void findAllItemByUserTest() {
+        long userId = 1L;
+        List<Item> itemLIst = List.of(Item.builder().build());
+        when(itemRepository.findAllByOwnerId(userId)).thenReturn(itemLIst);
 
+        List<Comment> commentList = List.of();
+        when(commentRepository.findAllByUserId(userId)).thenReturn(commentList);
+
+        List<Booking> bookingList = List.of();
+        when(bookingRepository.findAllByItemOwnerIdOrderByStart(userId)).thenReturn(bookingList);
+
+
+
+        List<ItemWithBookingAndComment> itemWithLIst = itemLIst.stream()
+                .map(a -> ItemMapper.itemWithBooking(a)).collect(Collectors.toList());
+
+        Map<Long, List<CommentReceiving>> listComment = commentList
+                .stream()
+                .map(a -> CommentMapper.fromCommentToCommentReceiving(a))
+                .collect(Collectors.groupingBy(c -> c.getItem(), Collectors.toList()));
+
+        Map<Long, List<Booking>> listBooking = bookingList
+                .stream()
+                .collect(Collectors.groupingBy(c -> c.getItem().getId(), Collectors.toList()));
+
+        itemWithLIst.stream()
+                .forEach(item -> {
+                    List<CommentReceiving> list  =
+                            listComment.getOrDefault(item.getId(), List.of());
+
+                    item.addComments(list);
+                });
+
+
+        List<ItemWithBookingAndComment> result = itemService.findAllItemByUser(userId);
+
+        assertEquals(result, itemWithLIst);
+    }
+
+    @Test
+    void searchTest() {
+        long userId = 1L;
+        String text = "asd";
+        List<ItemSearch> itenList = List.of(new ItemSearch());
+
+        when(itemRepository.findItemSearch(text, text)).thenReturn(itenList);
+
+        List<ItemSearch> newList = itemService.search(userId, text);
+
+        assertEquals(newList, itenList);
+    }
+
+    @Test
+    void createCommentTest() {
+        long userId = 1L;
+        long itemId = 1L;
+        Comment newComment = Comment.builder().build();
+        final LocalDateTime time = LocalDateTime.now().withNano(0);
+
+        BookingSearch booking = new BookingSearch();
+
+        when(bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
+                Status.APPROVED, time)).thenReturn(Optional.of(booking));
+
+        Comment comment = itemService.createComment(userId, itemId, newComment);
+
+        newComment.setCreate(time);
+        verify(commentRepository).save(newComment);
+    }
+
+    @Test
+    void createCommentNotEntityTest() {
+        long userId = 1L;
+        long itemId = 1L;
+        Comment newComment = Comment.builder().build();
+        final LocalDateTime time = LocalDateTime.now().withNano(0);
+
+        when(bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
+                Status.APPROVED, time)).thenThrow(CommentException.class);
+
+        assertThrows(CommentException.class, () -> itemService.createComment(userId, itemId, newComment));
+        verify(commentRepository, never()).save(newComment);
+
+    }
 
 }

@@ -156,13 +156,13 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public Comment createComment(Long userId, Long itemId, Comment newComment) {
-        final LocalDateTime timeNow = LocalDateTime.now();
+        final LocalDateTime timeNow = LocalDateTime.now().withNano(0);
         BookingSearch booking = bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
                         Status.APPROVED, timeNow)
                 .orElseThrow(() -> new CommentException("Пользователь не бронировал вещь"));
             Comment comment = Comment.builder()
                     .item(booking.getItem())
-                    .create(LocalDateTime.now())
+                    .create(LocalDateTime.now().withNano(0))
                     .user(booking.getBooker())
                     .text(newComment.getText())
                     .build();

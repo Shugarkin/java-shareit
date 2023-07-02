@@ -62,7 +62,7 @@ public class CommentMapper {
                 .build();
     }
 
-    public Comment a(CommentDtoReceived comment) {
+    public Comment toCommentFromCommentDtoReceived(CommentDtoReceived comment) {
         return Comment.builder()
                 .text(comment.getText())
                 .build();
