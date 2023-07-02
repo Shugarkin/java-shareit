@@ -41,10 +41,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequestWithItems> listRequestWithItems = RequestMapper.toListItemRequestWithItemsFromItemRequestSearch(itemRequestRepository.findAllByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден")));
 
-        List<String> listRequestId = listRequestWithItems.stream().map(ItemRequestWithItems::getId).map(Objects::toString).collect(Collectors.toList());
-        String query = String.join(",", listRequestId);
+        List<Long> listRequestId = listRequestWithItems.stream().map(ItemRequestWithItems::getId).collect(Collectors.toList());
 
-        Map<Long, List<Item>> mapItem = itemRepository.findAllByRequestId(query).stream()
+        Map<Long, List<Item>> mapItem = itemRepository.findAllByRequestId(listRequestId).stream()
                 .collect(Collectors.groupingBy(item -> item.getRequestId(), Collectors.toList()));
 
         listRequestWithItems.stream()
