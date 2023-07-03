@@ -85,6 +85,7 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
             case ALL:
+                List<BookingSearch> allByBookerIdOrderByStartDesc = bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
                 return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
             default:
                 throw new EntityNotFoundException("Неверный запрос");
