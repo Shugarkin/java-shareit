@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
-import static org.hibernate.validator.internal.util.Contracts.assertTrue;
 
 @DataJpaTest
 public class BookingRepositoryTest {
@@ -565,13 +564,16 @@ public class BookingRepositoryTest {
                 .id(bookingId)
                 .status(Status.APPROVED)
                 .booker(user1)
-                .start(LocalDateTime.now().plusSeconds(10))
-                .finish(LocalDateTime.now().plusSeconds(20))
+                .start(LocalDateTime.now())
+                .finish(LocalDateTime.now().plusNanos(1))
                 .item(item)
                 .build();
 
         bookingRepository.save(booking);
 
+        List<BookingSearch> firstByItemIdAndBookerIdAndStatusAndFinishBefore =
+                bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId2, Status.APPROVED, pageable);
 
+        assertNotEmpty(firstByItemIdAndBookerIdAndStatusAndFinishBefore, "не пустой");
     }
 }

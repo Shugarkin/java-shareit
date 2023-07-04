@@ -220,7 +220,7 @@ public class ItemServiceImplTest {
         long userId = 1L;
         long itemId = 1L;
         int from = 0;
-        int size = 10;
+        int size = 1;
         Pageable pageable = PageRequest.of(from, size);
 
         Comment newComment = Comment.builder().build();
