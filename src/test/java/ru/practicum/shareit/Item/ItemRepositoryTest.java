@@ -1,5 +1,7 @@
 package ru.practicum.shareit.Item;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -37,18 +39,41 @@ public class ItemRepositoryTest {
     //изначально хотел воспользоваться методами beforeEach, afterEach, но из-за присвоения бд id
     // не всегда можно отловить в каком методе какой id будет у сущности
 
+
+    private long userId = 1L;
+    private long itemId = 1L;
+
+    private long itemRequestId = 1L;
+    private Pageable pageable = PageRequest.of(0, 10);
+
+    private User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
+
+    private Item item = Item.builder()
+            .id(itemId).name("asd").available(true).description("asdf").owner(user).build();
+
+    private ItemRequest itemRequest = ItemRequest.builder()
+            .description("qwe").id(itemRequestId).userId(userId).created(LocalDateTime.now().withNano(0)).build();
+    @BeforeEach
+    void before() {
+        user = userRepository.save(user);
+        userId =user.getId();
+
+        item.setOwner(user);
+        item = itemRepository.save(item);
+        itemId = item.getId();
+
+        itemRequest.setUserId(userId);
+        itemRequest = itemRequestRepository.save(itemRequest);
+    }
+
+    @AfterEach
+    void after() {
+        userRepository.deleteAll();
+        itemRepository.deleteAll();
+    }
+
     @Test
     void findAllByOwnerIdTest() {
-        long itemId = 4L;
-        long userId = 4L;
-        Pageable pageable = PageRequest.of(0, 10);
-
-        User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
-        userRepository.save(user);
-
-        Item item = Item.builder()
-                .id(itemId).name("asd").available(true).description("asdf").owner(user).build();
-        itemRepository.save(item);
 
         List<Item> itemList = itemRepository.findAllByOwnerId(userId, pageable);
 
@@ -57,17 +82,6 @@ public class ItemRepositoryTest {
 
     @Test
     void findItemSearchTest() {
-        long itemId = 1L;
-        long userId = 1L;
-
-        Pageable pageable = PageRequest.of(0, 10);
-
-        User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
-        userRepository.save(user);
-
-        Item item = Item.builder()
-                .id(itemId).name("asd").available(true).description("asdf").owner(user).build();
-        itemRepository.save(item);
 
         String text = "as";
 
@@ -78,14 +92,6 @@ public class ItemRepositoryTest {
 
     @Test
     void findByIdAndOwnerIdTest() {
-        long itemId = 2L;
-        long userId = 2L;
-        User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
-        userRepository.save(user);
-
-        Item item = Item.builder()
-                .id(itemId).name("asd").available(true).description("asdf").owner(user).build();
-        itemRepository.save(item);
 
         Optional<Item> byIdAndOwnerId = itemRepository.findByIdAndOwnerId(itemId, userId);
 
@@ -94,20 +100,6 @@ public class ItemRepositoryTest {
 
     @Test
     void findAllByRequestIdTest() {
-        long itemId = 3L;
-        long userId = 3L;
-        long itemRequestId = 1L;
-
-        User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
-        userRepository.save(user);
-
-        ItemRequest itemRequest = ItemRequest.builder()
-                .description("qwe").id(itemRequestId).userId(userId).created(LocalDateTime.now().withNano(0)).build();
-        itemRequestRepository.save(itemRequest);
-
-        Item item = Item.builder()
-                .id(itemId).name("asd").available(true).description("asdf").requestId(itemRequestId).owner(user).build();
-        itemRepository.save(item);
 
         List<Long> list = List.of(1L);
         List<Item> allByRequestId = itemRepository.findAllByRequestIds(list);
