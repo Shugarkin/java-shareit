@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.ItemService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dao.BookingRepository;
@@ -81,6 +83,7 @@ public class ItemServiceImpl implements ItemService {
     public Item updateItem(Long userId, Long itemId, Item item) {
         Item newItem = itemRepository.findByIdAndOwnerId(itemId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
+
         String name = item.getName();
         String description = item.getDescription();
         Boolean available = item.getAvailable();
@@ -97,9 +100,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingAndComment> findAllItemByUser(Long userId) {
+    public List<ItemWithBookingAndComment> findAllItemByUser(Long userId, int from, int size) {
 
-        List<ItemWithBookingAndComment> result = itemRepository.findAllByOwnerId(userId)
+        Pageable pageable = PageRequest.of(from, size);
+
+        List<ItemWithBookingAndComment> result = itemRepository.findAllByOwnerId(userId, pageable)
                 .stream()
                 .map(a -> ItemMapper.itemWithBooking(a))
                 .collect(Collectors.toList());
@@ -146,20 +151,27 @@ public class ItemServiceImpl implements ItemService {
 }
 
     @Override
-    public List<ItemSearch> search(Long userId, String text) {
+    public List<ItemSearch> search(Long userId, String text, int from, int size) {
+
+        Pageable pageable = PageRequest.of(from, size);
+
         if (text.isBlank()) {
             return List.of();
         }
-        return itemRepository.findItemSearch(text, text);
+        return itemRepository.findItemSearch(text, text, pageable);
     }
 
     @Transactional
     @Override
     public Comment createComment(Long userId, Long itemId, Comment newComment) {
         final LocalDateTime timeNow = LocalDateTime.now().withNano(0);
-        BookingSearch booking = bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
-                        Status.APPROVED, timeNow)
-                .orElseThrow(() -> new CommentException("Пользователь не бронировал вещь"));
+        List<BookingSearch> bookingList = bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
+                        Status.APPROVED, timeNow);
+        if (bookingList.isEmpty()) {
+            throw new CommentException("Пользователь не бронировал вещь");
+        }
+        BookingSearch booking = bookingList.get(0);
+
             Comment comment = Comment.builder()
                     .item(booking.getItem())
                     .create(LocalDateTime.now().withNano(0))

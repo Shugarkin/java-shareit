@@ -15,7 +15,7 @@ public interface BookingService {
 
     BookingSearch findBooking(long userId, long bookingId);
 
-    List<BookingSearch> findListBooking(long userId, State state);
+    List<BookingSearch> findListBooking(long userId, State state, int from, int size);
 
-    List<BookingSearch> findListOwnerBooking(long userId, State state);
+    List<BookingSearch> findListOwnerBooking(long userId, State state, int from, int size);
 }

@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class ItemRequestDtoReceived {
 
-    @NotNull
     private Long userId;
 
     @NotBlank

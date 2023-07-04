@@ -45,14 +45,18 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoWithBookingAndComment> findAllItemByUser(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId) {
-        List<ItemDtoWithBookingAndComment> listItem = ItemMapper.toListItemDtoWithBooking(itemService.findAllItemByUser(userId));
+    public List<ItemDtoWithBookingAndComment> findAllItemByUser(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId,
+                                                                @RequestParam(defaultValue = "0") @Min(0)  int from,
+                                                                @RequestParam(defaultValue = "10") @Min(1)  int size) {
+        List<ItemDtoWithBookingAndComment> listItem = ItemMapper.toListItemDtoWithBooking(itemService.findAllItemByUser(userId, from, size));
         return listItem;
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @RequestParam String text) {
-        List<ItemSearch> itemList = itemService.search(userId, text);
+    public List<ItemDto> search(@RequestHeader("X-Sharer-User-Id") @Min(0) Long userId, @RequestParam String text,
+                                @RequestParam(defaultValue = "0") @Min(0)  int from,
+                                @RequestParam(defaultValue = "10") @Min(1)  int size) {
+        List<ItemSearch> itemList = itemService.search(userId, text, from, size);
         return ItemMapper.toListItemSearchInItemDto(itemList);
     }
 

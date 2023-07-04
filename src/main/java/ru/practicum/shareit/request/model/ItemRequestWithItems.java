@@ -19,7 +19,6 @@ public class ItemRequestWithItems {
     private List<Item> items;
 
     public void addItems(List<Item> list) {
-        items = List.of();
-        items.addAll(list);
+        items = list;
     }
 }
