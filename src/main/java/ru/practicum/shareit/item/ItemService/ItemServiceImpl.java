@@ -172,7 +172,7 @@ public class ItemServiceImpl implements ItemService {
         //и findFirst не используешь
         //и чтобы указать, что нужно взять именно одно значение воспользовался Pageable, а он может сохранят только в лист и страницу
         List<BookingSearch> bookingList = bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
-                        Status.APPROVED, timeNow, pageable);
+                        Status.APPROVED, pageable);
         if (bookingList.isEmpty()) {
             throw new CommentException("Пользователь не бронировал вещь");
         }
@@ -180,7 +180,7 @@ public class ItemServiceImpl implements ItemService {
 
             Comment comment = Comment.builder()
                     .item(booking.getItem())
-                    .create(LocalDateTime.now())
+                    .create(timeNow)
                     .user(booking.getBooker())
                     .text(newComment.getText())
                     .build();

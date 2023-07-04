@@ -49,20 +49,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("select new ru.practicum.shareit.booking.dto.BookingSearch(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
             "from Booking as b " +
-            "where b.booker.id = ?1  " +
-            "order by b.start desc ")
-    List<BookingSearch> findAllByBookerIdOrderByStartDesc(long userId);
-
-    @Query("select new ru.practicum.shareit.booking.dto.BookingSearch(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
-            "from Booking as b " +
             "where b.booker.id = ?1  ")
     List<BookingSearch> findAllByBookerIdOrderByStartDesc(long userId, Pageable pageable);
-
-//    @Query("select new ru.practicum.shareit.booking.dto.BookingSearch(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
-//            "from Booking as b " +
-//            "where b.booker.id = ?1  " +
-//            "order by b.start desc ")
-//    Page<BookingSearch> findAllByBookerIdOrderByStartDesc(long userId, Pageable pageable);
 
     @Query("select new ru.practicum.shareit.booking.dto.BookingSearch(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
             "from Booking as b " +
@@ -81,7 +69,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("select new ru.practicum.shareit.booking.dto.BookingSearch(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
             "from Booking as b " +
-            "where b.item.owner.id = ?1 and b.finish < now() and b.status =?2 ")
+            "where b.item.owner.id = ?1 and b.finish < now() and b.status = ?2 ")
     List<BookingSearch> findAllByItemOwnerIdAndStatePast(long userId, Status status, Pageable pageable);
 
     @Query("select new ru.practicum.shareit.booking.dto.BookingSearch(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
@@ -95,7 +83,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "from Booking as b " +
             "where b.item.id = ?1 and b.booker.id = ?2 and b.status = ?3 and b.finish < now() " +
             "order by b.start desc " )
-    List<BookingSearch> findFirstByItemIdAndBookerIdAndStatusAndFinishBefore( Long itemId, Long userId,
-                                                                                 Status status, LocalDateTime timeNow, Pageable pageable);
+    List<BookingSearch> findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(Long itemId, Long userId,
+                                                                                 Status status, Pageable pageable);
 
 }

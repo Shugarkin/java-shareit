@@ -207,7 +207,7 @@ public class ItemServiceImplTest {
         BookingSearch booking = new BookingSearch();
 
         when(bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
-                Status.APPROVED, time, pageable)).thenReturn(List.of(booking));
+                Status.APPROVED, pageable)).thenReturn(List.of(booking));
 
         Comment comment = itemService.createComment(userId, itemId, newComment);
 
@@ -227,7 +227,7 @@ public class ItemServiceImplTest {
         LocalDateTime time = LocalDateTime.now();
 
         when(bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
-                Status.APPROVED, time, pageable)).thenThrow(CommentException.class);
+                Status.APPROVED, pageable)).thenThrow(CommentException.class);
 
         assertThrows(CommentException.class, () -> itemService.createComment(userId, itemId, newComment));
         verify(commentRepository, never()).save(newComment);
