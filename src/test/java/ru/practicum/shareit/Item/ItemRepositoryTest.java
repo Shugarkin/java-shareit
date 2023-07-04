@@ -3,6 +3,8 @@ package ru.practicum.shareit.Item;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemSearch;
 import ru.practicum.shareit.item.model.Item;
@@ -11,6 +13,8 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +41,8 @@ public class ItemRepositoryTest {
         long itemId = 4L;
         long userId = 4L;
         long itemRequestId = 4L;
+        Pageable pageable = PageRequest.of(0, 10);
+
         User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
         userRepository.save(user);
 
@@ -48,7 +54,7 @@ public class ItemRepositoryTest {
                 .id(itemId).name("asd").available(true).description("asdf").requestId(itemRequestId).owner(user).build();
         itemRepository.save(item);
 
-        List<Item> itemList = itemRepository.findAllByOwnerId(userId);
+        List<Item> itemList = itemRepository.findAllByOwnerId(userId, pageable);
 
         assertNotNull(itemList);
     }
@@ -58,6 +64,9 @@ public class ItemRepositoryTest {
         long itemId = 1L;
         long userId = 1L;
         long itemRequestId = 1L;
+
+        Pageable pageable = PageRequest.of(0, 10);
+
         User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
         userRepository.save(user);
 
@@ -71,7 +80,7 @@ public class ItemRepositoryTest {
 
         String text = "as";
 
-        List<ItemSearch> itemSearch = itemRepository.findItemSearch(text, text);
+        List<ItemSearch> itemSearch = itemRepository.findItemSearch(text, text, pageable);
 
         assertEquals(1, itemSearch.size());
     }
@@ -102,6 +111,7 @@ public class ItemRepositoryTest {
         long itemId = 3L;
         long userId = 3L;
         long itemRequestId = 3L;
+
         User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
         userRepository.save(user);
 
@@ -114,7 +124,7 @@ public class ItemRepositoryTest {
         itemRepository.save(item);
 
         List<Long> list = List.of(3L);
-        List<Item> allByRequestId = itemRepository.findAllByRequestId(list);
+        List<Item> allByRequestId = itemRepository.findAllByRequestIds(list);
 
         assertEquals(1, allByRequestId.size());
     }

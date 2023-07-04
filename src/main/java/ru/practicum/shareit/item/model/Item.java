@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Setter
 @Builder
 @Entity
+@ToString
 @Table(name = "items")
 public class Item {
 

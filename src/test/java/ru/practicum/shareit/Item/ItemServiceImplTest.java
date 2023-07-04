@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.matchers.Equals;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingSearch;
 import ru.practicum.shareit.booking.model.Booking;
@@ -134,8 +136,11 @@ public class ItemServiceImplTest {
     @Test
     void findAllItemByUserTest() {
         long userId = 1L;
+        int from = 0;
+        int size = 10;
+        Pageable pageable = PageRequest.of(from, size);
         List<Item> itemLIst = List.of(Item.builder().build());
-        when(itemRepository.findAllByOwnerId(userId)).thenReturn(itemLIst);
+        when(itemRepository.findAllByOwnerId(userId, pageable)).thenReturn(itemLIst);
 
         List<Comment> commentList = List.of();
         when(commentRepository.findAllByUserId(userId)).thenReturn(commentList);
@@ -166,7 +171,7 @@ public class ItemServiceImplTest {
                 });
 
 
-        List<ItemWithBookingAndComment> result = itemService.findAllItemByUser(userId);
+        List<ItemWithBookingAndComment> result = itemService.findAllItemByUser(userId, from, size);
 
         assertEquals(result, itemWithLIst);
     }
@@ -175,11 +180,15 @@ public class ItemServiceImplTest {
     void searchTest() {
         long userId = 1L;
         String text = "asd";
+        int from = 0;
+        int size = 10;
+        Pageable pageable = PageRequest.of(from, size);
+
         List<ItemSearch> itenList = List.of(new ItemSearch());
 
-        when(itemRepository.findItemSearch(text, text)).thenReturn(itenList);
+        when(itemRepository.findItemSearch(text, text, pageable)).thenReturn(itenList);
 
-        List<ItemSearch> newList = itemService.search(userId, text);
+        List<ItemSearch> newList = itemService.search(userId, text, from, size);
 
         assertEquals(newList, itenList);
     }
@@ -188,13 +197,17 @@ public class ItemServiceImplTest {
     void createCommentTest() {
         long userId = 1L;
         long itemId = 1L;
+        int from = 0;
+        int size = 1;
+        Pageable pageable = PageRequest.of(from, size);
+
         Comment newComment = Comment.builder().build();
-        final LocalDateTime time = LocalDateTime.now().withNano(0);
+        LocalDateTime time = LocalDateTime.now();
 
         BookingSearch booking = new BookingSearch();
 
         when(bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
-                Status.APPROVED, time)).thenReturn(Optional.of(booking));
+                Status.APPROVED, time, pageable)).thenReturn(List.of(booking));
 
         Comment comment = itemService.createComment(userId, itemId, newComment);
 
@@ -206,11 +219,15 @@ public class ItemServiceImplTest {
     void createCommentNotEntityTest() {
         long userId = 1L;
         long itemId = 1L;
+        int from = 0;
+        int size = 10;
+        Pageable pageable = PageRequest.of(from, size);
+
         Comment newComment = Comment.builder().build();
-        final LocalDateTime time = LocalDateTime.now().withNano(0);
+        LocalDateTime time = LocalDateTime.now();
 
         when(bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
-                Status.APPROVED, time)).thenThrow(CommentException.class);
+                Status.APPROVED, time, pageable)).thenThrow(CommentException.class);
 
         assertThrows(CommentException.class, () -> itemService.createComment(userId, itemId, newComment));
         verify(commentRepository, never()).save(newComment);

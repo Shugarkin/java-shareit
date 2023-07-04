@@ -83,10 +83,12 @@ public class ItemControllerTest {
 
         List<ItemDtoWithBookingAndComment> itemDto = ItemMapper.toListItemDtoWithBooking(itemList);
 
+        int from = 0;
+        int size = 10;
 
-        when(itemService.findAllItemByUser(userId)).thenReturn(itemList);
+        when(itemService.findAllItemByUser(userId, from, size)).thenReturn(itemList);
 
-        List<ItemDtoWithBookingAndComment> list = itemController.findAllItemByUser(userId);
+        List<ItemDtoWithBookingAndComment> list = itemController.findAllItemByUser(userId, from, size);
 
         assertEquals(list, itemDto);
     }
@@ -95,12 +97,14 @@ public class ItemControllerTest {
     void searchTest() {
         long userId = 1L;
         String text = "asd";
+        int from = 0;
+        int size = 10;
 
         List<ItemSearch> itemList = List.of();
 
-        when(itemService.search(userId, text)).thenReturn(itemList);
+        when(itemService.search(userId, text, from, size)).thenReturn(itemList);
 
-        List<ItemDto> listDto = itemController.search(userId, text);
+        List<ItemDto> listDto = itemController.search(userId, text, from, size);
 
         assertEquals(listDto, itemList);
     }

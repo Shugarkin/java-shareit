@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.EntityNotFoundException;
@@ -46,7 +47,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestWithItems> findListRequest(long userId, int from, int size) {
         checkUser(userId);
 
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from, size, Sort.by("created").ascending());
 
         List<ItemRequestWithItems> listRequestWithItems = RequestMapper
             .toListItemRequestWithItemsFromItemRequestSearch(itemRequestRepository.findAllByUserIdNotOrderByCreated(userId, pageable));

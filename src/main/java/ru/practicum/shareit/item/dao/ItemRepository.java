@@ -8,7 +8,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.dto.ItemSearch;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {

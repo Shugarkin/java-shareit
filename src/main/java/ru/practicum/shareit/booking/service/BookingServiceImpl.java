@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dao.BookingRepository;
@@ -77,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingSearch> findListBooking(long userId, State state, int from, int size) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Юзер не найден"));
 
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from > 0 ? from/size : 0, size, Sort.by("start").descending());
 
         switch (state) {
             case CURRENT:
@@ -91,7 +92,7 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED, pageable);
             case ALL:
-                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable).getContent();
+                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable);
             default:
                 throw new EntityNotFoundException("Неверный запрос");
         }
@@ -101,7 +102,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingSearch> findListOwnerBooking(long userId, State state, int from, int size) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Юзер не найден"));
 
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from > 0 ? from/size : 0, size, Sort.by("start").descending());
 
         switch (state) {
             case CURRENT:

@@ -8,6 +8,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.booking.model.SmallBooking;
@@ -161,13 +163,16 @@ public class ItemControllerITTest {
         long userId = 1L;
         List<ItemWithBookingAndComment> itemList =  List.of();
 
-        when(itemService.findAllItemByUser(userId)).thenReturn(itemList);
+        int from = 0;
+        int size = 10;
+
+        when(itemService.findAllItemByUser(userId, from, size)).thenReturn(itemList);
 
         mockMvc.perform(get("/items")
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isOk());
 
-        verify(itemService).findAllItemByUser(userId);
+        verify(itemService).findAllItemByUser(userId, from, size);
     }
 
     @SneakyThrows
@@ -176,14 +181,17 @@ public class ItemControllerITTest {
         long userId = 1L;
         String text = "asd";
 
+        int from = 0;
+        int size = 10;
+
         List<ItemSearch> list = List.of();
-        when(itemService.search(userId, text)).thenReturn(list);
+        when(itemService.search(userId, text, from, size)).thenReturn(list);
 
         mockMvc.perform(get("/items/search")
                 .header("X-Sharer-User-Id", userId)
                 .param("text", text))
                 .andExpect(status().isOk());
-        verify(itemService).search(userId, text);
+        verify(itemService).search(userId, text, from, size);
     }
 
     @SneakyThrows

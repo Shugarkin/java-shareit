@@ -102,7 +102,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemWithBookingAndComment> findAllItemByUser(Long userId, int from, int size) {
 
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from > 0 ? from/size : 0, size);
 
         List<ItemWithBookingAndComment> result = itemRepository.findAllByOwnerId(userId, pageable)
                 .stream()
@@ -153,7 +153,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemSearch> search(Long userId, String text, int from, int size) {
 
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from > 0 ? from/size : 0, size);
 
         if (text.isBlank()) {
             return List.of();
@@ -164,9 +164,15 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public Comment createComment(Long userId, Long itemId, Comment newComment) {
-        final LocalDateTime timeNow = LocalDateTime.now().withNano(0);
+        final LocalDateTime timeNow = LocalDateTime.now();
+
+        Pageable pageable = PageRequest.of(0, 1);
+        //здесь использовал лист из-за того, что почему то в сравнении с превидущим тз здесь хибер ругается на отсутствие конвертируемого класса
+        //то есть хочет чтобы я явно указал в какой класс следует сохранить, однако, на сколько я понял функции limit в хибере нет
+        //и findFirst не используешь
+        //и чтобы указать, что нужно взять именно одно значение воспользовался Pageable, а он может сохранят только в лист и страницу
         List<BookingSearch> bookingList = bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
-                        Status.APPROVED, timeNow);
+                        Status.APPROVED, timeNow, pageable);
         if (bookingList.isEmpty()) {
             throw new CommentException("Пользователь не бронировал вещь");
         }
@@ -174,7 +180,7 @@ public class ItemServiceImpl implements ItemService {
 
             Comment comment = Comment.builder()
                     .item(booking.getItem())
-                    .create(LocalDateTime.now().withNano(0))
+                    .create(LocalDateTime.now())
                     .user(booking.getBooker())
                     .text(newComment.getText())
                     .build();

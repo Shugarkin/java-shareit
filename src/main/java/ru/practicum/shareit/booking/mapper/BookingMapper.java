@@ -59,4 +59,12 @@ public class BookingMapper {
                 .finish(bookingDtoReceived.getEnd())
                 .build();
     }
+
+    public BookingDtoReceived toBookingDtoReceived(Booking booking) {
+        return BookingDtoReceived.builder()
+                .end(booking.getFinish())
+                .start(booking.getStart())
+                .itemId(booking.getItem().getId())
+                .build();
+    }
 }
