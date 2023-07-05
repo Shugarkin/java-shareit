@@ -35,7 +35,7 @@ public class ItemControllerTest {
     private long itemId = 1L;
 
     @Test
-    void createItemTest() {
+    void createItem() {
         Item item = Item.builder().build();
         ItemDto itemDto = ItemMapper.toItemDto(item);
 
@@ -47,7 +47,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void findItemTest() {
+    void findItem() {
         ItemWithBookingAndComment item = ItemWithBookingAndComment.builder().build();
         List<CommentReceiving> comment = List.of();
         item.setComments(comment);
@@ -61,7 +61,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void updateItemTest() {
+    void updateItem() {
         Item item = Item.builder().name("палка").build();
         ItemDto itemDto = ItemMapper.toItemDto(item);
 
@@ -73,7 +73,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void findAllItemByUserTest() {
+    void findAllItemByUser() {
         ItemWithBookingAndComment item = ItemWithBookingAndComment.builder().build();
         List<CommentReceiving> comment = List.of();
         item.addComments(comment);
@@ -92,7 +92,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void searchTest() {
+    void search() {
         String text = "asd";
         int from = 0;
         int size = 10;
@@ -107,7 +107,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void createCommentTest() {
+    void createComment() {
         Item item = Item.builder().id(1L).build();
         User user = User.builder().name("fdfds").build();
 

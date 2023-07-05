@@ -25,7 +25,7 @@ public class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void createUserTest() {
+    void createUser() {
         User user = User.builder().build();
 
         Mockito.when(userRepository.save(user)).thenReturn(user);
@@ -58,7 +58,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void updateUserTest() {
+    void updateUser() {
         User userOld = User.builder().id(1L).name("Алеша").email("alesha@.yandex.ru").build();
         User userNew = User.builder().id(1L).name("Алешша").email("aalesha@.yandex.ru").build();
         long userId = 1L;
@@ -72,7 +72,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void updateUserThrownTest() {
+    void updateUserThrown() {
         User user = User.builder().id(1L).name("Алеша").email("alesha@.yandex.ru").build();
         long userId = 0L;
 
@@ -84,7 +84,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void findAllUsersTest() {
+    void findAllUsers() {
         List<User> list = List.of(User.builder().id(1L).name("Алеша").email("alesha@.yandex.ru").build());
 
         Mockito.when(userRepository.findAll()).thenReturn(list);

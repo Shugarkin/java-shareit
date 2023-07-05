@@ -55,7 +55,7 @@ public class ItemServiceImplTest {
     private long itemId = 1L;
 
     @Test
-    void createItemTest() {
+    void createItem() {
 
         User user = User.builder().build();
 
@@ -71,7 +71,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void findItemTest() {
+    void findItem() {
 
         Item item = Item.builder().build();
 
@@ -90,7 +90,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void findItemNotEntityTest() {
+    void findItemNotEntity() {
 
         when(itemRepository.findById(itemId)).thenThrow(EntityNotFoundException.class);
 
@@ -98,7 +98,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void updateItemTest() {
+    void updateItem() {
         Item item = Item.builder().build();
         Item newItem = Item.builder().name("asd").build();
 
@@ -111,7 +111,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void updateItemNotEntityTest() {
+    void updateItemNotEntity() {
         Item item = Item.builder().build();
 
         when(itemRepository.findByIdAndOwnerId(itemId, userId)).thenThrow(EntityNotFoundException.class);
@@ -121,7 +121,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void findAllItemByUserTest() {
+    void findAllItemByUser() {
         int from = 0;
         int size = 10;
         Pageable pageable = PageRequest.of(from, size);
@@ -144,7 +144,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void searchTest() {
+    void search() {
         String text = "asd";
         int from = 0;
         int size = 10;
@@ -160,7 +160,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void createCommentTest() {
+    void createComment() {
         int from = 0;
         int size = 1;
         Pageable pageable = PageRequest.of(from, size);
@@ -180,7 +180,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void createCommentNotEntityTest() {
+    void createCommentNotEntity() {
         int from = 0;
         int size = 1;
         Pageable pageable = PageRequest.of(from, size);

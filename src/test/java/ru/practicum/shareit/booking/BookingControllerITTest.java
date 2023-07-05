@@ -79,7 +79,7 @@ public class BookingControllerITTest {
 
     @SneakyThrows
     @Test
-    void postBookingTest() {
+    void postBooking() {
         BookingDtoReceived bookingDtoReceived = BookingDtoReceived.builder()
                 .itemId(itemId)
                 .start(start)
@@ -106,7 +106,7 @@ public class BookingControllerITTest {
 
     @SneakyThrows
     @Test
-    void approvedBookingTest() {
+    void approvedBooking() {
         boolean approved = true;
 
         BookingDto bookingDto = BookingMapper.toBookingDto(booking);
@@ -130,7 +130,7 @@ public class BookingControllerITTest {
 
     @SneakyThrows
     @Test
-    void findBookingTest() {
+    void findBooking() {
 
         BookingSearch booking = BookingSearch.builder()
                 .item(item)
@@ -160,7 +160,7 @@ public class BookingControllerITTest {
 
     @SneakyThrows
     @Test
-    void findListBookingTest() {
+    void findListBooking() {
         State state = State.ALL;
         int from = 1;
         int size = 10;
@@ -178,7 +178,7 @@ public class BookingControllerITTest {
 
     @SneakyThrows
     @Test
-    void findOwnerBookingTest() {
+    void findOwnerBooking() {
         State state = State.ALL;
         int from = 1;
         int size = 10;

@@ -49,7 +49,7 @@ public class ItemControllerITTest {
 
     @SneakyThrows
     @Test
-    void createItemTest() {
+    void createItem() {
 
         ItemDto itemDto = ItemMapper.toItemDto(item);
 
@@ -134,7 +134,7 @@ public class ItemControllerITTest {
 
     @SneakyThrows
     @Test
-    void updateItemTest() {
+    void updateItem() {
         ItemDto itemDto = ItemMapper.toItemDto(item);
 
         when(itemService.updateItem(userId, itemId, item)).thenReturn(item);
@@ -153,7 +153,7 @@ public class ItemControllerITTest {
 
     @SneakyThrows
     @Test
-    void findAllItemByUserTest() {
+    void findAllItemByUser() {
         List<ItemWithBookingAndComment> itemList =  List.of();
 
         int from = 0;
@@ -170,7 +170,7 @@ public class ItemControllerITTest {
 
     @SneakyThrows
     @Test
-    void searchTest() {
+    void search() {
         String text = "asd";
 
         int from = 0;
@@ -188,7 +188,7 @@ public class ItemControllerITTest {
 
     @SneakyThrows
     @Test
-    void createCommentTest() {
+    void createComment() {
         Comment comment = Comment.builder()
                 .id(1L)
                 .create(LocalDateTime.now().withNano(0))

@@ -35,7 +35,7 @@ public class UserControllerITTest {
 
     @SneakyThrows
     @Test
-    void findUserTest() {
+    void findUser() {
         User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
 
         when(userService.findUserById(userId)).thenReturn(user);
@@ -48,7 +48,7 @@ public class UserControllerITTest {
 
     @SneakyThrows
     @Test
-    void createUserTest() {
+    void createUser() {
 
         User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
         when(userService.createUser(user)).thenReturn(user);
@@ -66,7 +66,7 @@ public class UserControllerITTest {
 
     @SneakyThrows
     @Test
-    void notCreateNotValidUserTest() {
+    void notCreateNotValidUser() {
 
         User userNotValid = User.builder().id(userId).name("dgs").email(null).build();
         mockMvc.perform(post("/users", userNotValid)
@@ -86,7 +86,7 @@ public class UserControllerITTest {
 
     @SneakyThrows
     @Test
-    void findAllUserTest() {
+    void findAllUser() {
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk());
@@ -95,7 +95,7 @@ public class UserControllerITTest {
     }
 
     @Test
-    void deleteUserTest() {
+    void deleteUser() {
 
         userService.deleteUser(userId);
 
@@ -104,7 +104,7 @@ public class UserControllerITTest {
 
     @SneakyThrows
     @Test
-    void updateUserTest() {
+    void updateUser() {
         long userId = 1L;
 
         User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();

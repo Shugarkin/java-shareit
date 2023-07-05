@@ -41,7 +41,7 @@ public class ItemRequestServiceImplTest {
     private ItemRequestServiceImpl itemRequestService;
 
     @Test
-    void addRequestTest() {
+    void addRequest() {
         long userId = 1L;
         User user = User.builder().build();
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -55,7 +55,7 @@ public class ItemRequestServiceImplTest {
     }
 
     @Test
-    void findListRequestTest() {
+    void findListRequest() {
         long userId = 1L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("created").ascending());
 
@@ -73,7 +73,7 @@ public class ItemRequestServiceImplTest {
     }
 
     @Test
-    void findListRequestUserTest() {
+    void findListRequestUser() {
         long userId = 1L;
 
         List<ItemRequestSearch> list = List.of(new ItemRequestSearch());

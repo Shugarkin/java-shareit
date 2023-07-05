@@ -59,14 +59,14 @@ public class ItemRequestRepositoryTest {
     }
 
     @Test
-    void findAllByUserIdTest() {
+    void findAllByUserId() {
         List<ItemRequestSearch> allByUserId = itemRequestRepository.findAllByUserId(userId);
 
         assertEquals(1, allByUserId.size());
     }
 
     @Test
-    void findAllByUserIdNotOrderByCreatedTest() {
+    void findAllByUserIdNotOrderByCreated() {
         long otherUser = userId + 1;
         Pageable pageable = PageRequest.of(0, 1);
         List<ItemRequestSearch> allByUserIdNotOrderByCreated = itemRequestRepository.findAllByUserIdNotOrderByCreated(otherUser, pageable);
@@ -75,7 +75,7 @@ public class ItemRequestRepositoryTest {
     }
 
     @Test
-    void findByIdTest() {
+    void findById() {
         Optional<ItemRequestSearch> byId = itemRequestRepository.findById(itemRequestId);
 
         Assertions.assertNotNull(byId);

@@ -58,7 +58,7 @@ public class ItemRequestControllerITTest {
 
     @SneakyThrows
     @Test
-    void addRequestTest() {
+    void addRequest() {
         ItemRequestDtoReceived itemRequestDtoReceived = ItemRequestDtoReceived.builder()
                 .description("asd")
                 .userId(userId)
@@ -83,7 +83,7 @@ public class ItemRequestControllerITTest {
 
     @SneakyThrows
     @Test
-    void findListRequestUserTest() {
+    void findListRequestUser() {
 
         when(itemRequestService.findListRequestUser(userId)).thenReturn(List.of(itemRequestWithItems));
 
@@ -102,7 +102,7 @@ public class ItemRequestControllerITTest {
 
     @SneakyThrows
     @Test
-    void findListRequestTest() {
+    void findListRequest() {
 
         when(itemRequestService.findListRequest(userId, 0, 10)).thenReturn(List.of(itemRequestWithItems));
 
@@ -121,7 +121,7 @@ public class ItemRequestControllerITTest {
 
     @SneakyThrows
     @Test
-    void findItemRequestTest() {
+    void findItemRequest() {
 
         when(itemRequestService.findItemRequest(userId, itemRequestId)).thenReturn(itemRequestWithItems);
 

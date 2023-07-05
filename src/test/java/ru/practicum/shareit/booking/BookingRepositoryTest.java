@@ -87,7 +87,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findBookingTest() {
+    void findBooking() {
 
         Optional<BookingSearch> booking1 = bookingRepository.findBooking(bookingId, userId, userId);
 
@@ -96,7 +96,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByBookerIdAndStateCurrentTest() {
+    void findAllByBookerIdAndStateCurrent() {
         booking.setFinish(LocalDateTime.now().plusSeconds(10));
 
         bookingRepository.save(booking);
@@ -107,7 +107,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByBookerIdAndStatusOrderByStartDescTest() {
+    void findAllByBookerIdAndStatusOrderByStartDesc() {
 
         List<BookingSearch> allByBookerIdAndStateCurrent = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId2, Status.WAITING, pageable);
 
@@ -123,7 +123,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByItemOwnerIdOrderByStartDescTest() {
+    void findAllByItemOwnerIdOrderByStartDesc() {
 
 
         List<BookingSearch> allByBookerIdAndStateCurrent = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable);
@@ -132,7 +132,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findByIdAndItemOwnerIdTest() {
+    void findByIdAndItemOwnerId() {
 
 
         Optional<Booking> byIdAndItemOwnerId = bookingRepository.findByIdAndItemOwnerId(bookingId, userId);
@@ -141,7 +141,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void existsByItemOwnerIdOrBookerIdTest() {
+    void existsByItemOwnerIdOrBookerId() {
 
         boolean answer = bookingRepository.existsByItemOwnerIdOrBookerId(userId, userId2);
 
@@ -149,7 +149,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByItemOwnerIdOrderByStartTest() {
+    void findAllByItemOwnerIdOrderByStart() {
 
         List<Booking> allByItemOwnerIdOrderByStart = bookingRepository.findAllByItemOwnerIdOrderByStart(userId);
 
@@ -157,7 +157,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByBookerIdOrderByStartDescTest() {
+    void findAllByBookerIdOrderByStartDesc() {
 
         List<BookingSearch> allByBookerIdOrderByStartDesc = bookingRepository.findAllByBookerIdOrderByStartDesc(userId2, pageable);
 
@@ -165,7 +165,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByBookerIdAndStatePastTest() {
+    void findAllByBookerIdAndStatePast() {
         booking.setStatus(Status.APPROVED);
         booking.setFinish(LocalDateTime.now().minusNanos(1));
 
@@ -177,7 +177,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByBookerIdAndStateFutureTest() {
+    void findAllByBookerIdAndStateFuture() {
         booking.setStart(LocalDateTime.now().plusSeconds(10));
         booking.setFinish(LocalDateTime.now().plusSeconds(20));
 
@@ -189,7 +189,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByItemOwnerAndStateCurrentTest() {
+    void findAllByItemOwnerAndStateCurrent() {
         booking.setFinish(LocalDateTime.now().plusSeconds(20));
 
         bookingRepository.save(booking);
@@ -200,7 +200,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByItemOwnerIdAndStatePastTest() {
+    void findAllByItemOwnerIdAndStatePast() {
         booking.setStatus(Status.APPROVED);
         booking.setFinish(LocalDateTime.now());
 
@@ -213,7 +213,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByItemOwnerIdAndStateFutureTest() {
+    void findAllByItemOwnerIdAndStateFuture() {
         booking.setStatus(Status.APPROVED);
         booking.setStart(LocalDateTime.now().plusSeconds(10));
         booking.setFinish(LocalDateTime.now().plusSeconds(20));
@@ -226,7 +226,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findAllByItemIdAndItemOwnerIdAndStatusOrderByStartTest() {
+    void findAllByItemIdAndItemOwnerIdAndStatusOrderByStart() {
         booking.setStatus(Status.APPROVED);
         booking.setStart(LocalDateTime.now().plusSeconds(10));
         booking.setFinish(LocalDateTime.now().plusSeconds(20));
@@ -240,7 +240,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findFirstByItemIdAndBookerIdAndStatusAndFinishBeforeTest() {
+    void findFirstByItemIdAndBookerIdAndStatusAndFinishBefore() {
         booking.setStatus(Status.APPROVED);
         booking.setStart(LocalDateTime.now());
         booking.setFinish(LocalDateTime.now().plusNanos(1));

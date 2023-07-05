@@ -32,7 +32,7 @@ public class BookingControllerTest {
     private BookingController bookingController;
 
     @Test
-    void postBookingTest() {
+    void postBooking() {
         long userId = 1L;
         long itemId = 1L;
         Item item = Item.builder().id(itemId).build();
@@ -52,7 +52,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void approvedBookingTest() {
+    void approvedBooking() {
         long userId = 1L;
         long itemId = 1L;
         long bookingId = 1L;
@@ -70,7 +70,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void findBookingTest() {
+    void findBooking() {
         long userId = 1L;
         long itemId = 1L;
         long bookingId = 1L;
@@ -87,7 +87,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void findListBookingTest() {
+    void findListBooking() {
         long userId = 1L;
 
         when(bookingService.findListBooking(userId, State.ALL, 0, 10)).thenReturn(List.of());
@@ -99,7 +99,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void findOwnerBookingTest() {
+    void findOwnerBooking() {
         long userId = 1L;
 
         when(bookingService.findListOwnerBooking(userId, State.ALL, 0, 10)).thenReturn(List.of());

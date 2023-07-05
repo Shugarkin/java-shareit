@@ -101,7 +101,7 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    void findAllByUserIdTest() {
+    void findAllByUserId() {
         List<Comment> allByUserId = commentRepository.findAllByUserId(userIdBooking);
 
         assertEquals(1, allByUserId.size());

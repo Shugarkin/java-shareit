@@ -42,7 +42,7 @@ public class BookingServiceImplTest {
     private BookingServiceImpl bookingService;
 
     @Test
-    void postBookingTest() {
+    void postBooking() {
         long userId = 1L;
         long itemId = 1L;
         long userIdBooker = 2L;
@@ -64,7 +64,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void approvedBookingTest() {
+    void approvedBooking() {
         long userId = 1L;
         long bookingId = 1L;
         long itemId = 1L;
@@ -83,7 +83,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingTest() {
+    void findBooking() {
         long userId = 1L;
         long bookingId = 1L;
         long itemId = 1L;
@@ -100,7 +100,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void findListBookingTest() {
+    void findListBooking() {
         long userId = 1L;
         long itemId = 1L;
         int from = 0;
@@ -140,7 +140,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void findListOwnerBookingTest() {
+    void findListOwnerBooking() {
         long userId = 1L;
         long itemId = 1L;
         int from = 0;

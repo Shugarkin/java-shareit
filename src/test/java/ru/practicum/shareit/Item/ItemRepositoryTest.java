@@ -74,7 +74,7 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    void findAllByOwnerIdTest() {
+    void findAllByOwnerId() {
 
         List<Item> itemList = itemRepository.findAllByOwnerId(userId, pageable);
 
@@ -82,7 +82,7 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    void findItemSearchTest() {
+    void findItemSearch() {
 
         String text = "as";
 
@@ -92,7 +92,7 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    void findByIdAndOwnerIdTest() {
+    void findByIdAndOwnerId() {
 
         Optional<Item> byIdAndOwnerId = itemRepository.findByIdAndOwnerId(itemId, userId);
 
@@ -100,7 +100,7 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    void findAllByRequestIdsTest() {
+    void findAllByRequestIds() {
         List<Long> list = List.of(itemRequestId);
 
         List<Item> allByRequestId = itemRepository.findAllByRequestIds(list);
@@ -109,7 +109,7 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    void findAllByRequestIdTest() {
+    void findAllByRequestId() {
         List<Item> allByRequestId = itemRepository.findAllByRequestId(itemRequestId);
 
         assertNotEmpty(allByRequestId, "не пуст");
