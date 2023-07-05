@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dao.ItemRepository;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.model.ItemRequestSearch;
@@ -67,7 +68,7 @@ public class ItemRequestServiceImplTest {
 
         when(userRepository.existsById(userId)).thenReturn(true);
 
-        when(itemRepository.findAllByRequestIds(any())).thenReturn(List.of());
+        when(itemRepository.findAllByRequestIds(any())).thenReturn(List.of(Item.builder().id(1L).requestId(1L).build()));
 
         List<ItemRequestWithItems> listRequest = itemRequestService.findListRequest(userId, 0, 10);
 
@@ -84,7 +85,7 @@ public class ItemRequestServiceImplTest {
 
         when(userRepository.existsById(userId)).thenReturn(true);
 
-        when(itemRepository.findAllByRequestIds(any())).thenReturn(List.of());
+        when(itemRepository.findAllByRequestIds(any())).thenReturn(List.of(Item.builder().id(1L).requestId(1L).build()));
 
         List<ItemRequestWithItems> listRequest = itemRequestService.findListRequestUser(userId);
 
