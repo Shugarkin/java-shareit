@@ -5,16 +5,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequestSearch;
+import ru.practicum.shareit.request.model.ItemRequestWithItems;
 import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,6 +56,36 @@ public class ItemRequestServiceImplTest {
 
     @Test
     void findListRequestTest() {
+        long userId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("created").ascending());
 
+        List<ItemRequestSearch> list = List.of(new ItemRequestSearch());
+
+        when(itemRequestRepository.findAllByUserIdNotOrderByCreated(userId, pageable)).thenReturn(list);
+
+        when(userRepository.existsById(userId)).thenReturn(true);
+
+        when(itemRepository.findAllByRequestIds(any())).thenReturn(List.of());
+
+        List<ItemRequestWithItems> listRequest = itemRequestService.findListRequest(userId, 0, 10);
+
+        assertNotEmpty(listRequest, "не пуст");
+    }
+
+    @Test
+    void findListRequestUserTest() {
+        long userId = 1L;
+
+        List<ItemRequestSearch> list = List.of(new ItemRequestSearch());
+
+        when(itemRequestRepository.findAllByUserId(userId)).thenReturn(list);
+
+        when(userRepository.existsById(userId)).thenReturn(true);
+
+        when(itemRepository.findAllByRequestIds(any())).thenReturn(List.of());
+
+        List<ItemRequestWithItems> listRequest = itemRequestService.findListRequestUser(userId);
+
+        assertNotEmpty(listRequest, "не пуст");
     }
 }

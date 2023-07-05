@@ -50,15 +50,23 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         List<Long> listRequestId = listRequestWithItems.stream().map(ItemRequestWithItems::getId).collect(Collectors.toList());
 
-        Map<Long, List<Item>> mapItem = itemRepository.findAllByRequestIds(listRequestId).stream()
-                .collect(Collectors.groupingBy(item -> item.getRequestId(), Collectors.toList()));
+        List<Item> allByRequestIds = itemRepository.findAllByRequestIds(listRequestId);
 
-        listRequestWithItems.stream()
-                .forEach(request -> {
-                    List<Item> listItem = mapItem.getOrDefault(request.getId(), List.of());
+        if (!allByRequestIds.isEmpty()) {
+            Map<Long, List<Item>> mapItem = allByRequestIds.stream()
+                    .collect(Collectors.groupingBy(item -> item.getRequestId(), Collectors.toList()));
 
-                    request.addItems(listItem);
-                });
+            listRequestWithItems.stream()
+                    .forEach(request -> {
+                        List<Item> listItem = mapItem.getOrDefault(request.getId(), List.of());
+
+                        request.addItems(listItem);
+                    });
+        } else {
+            listRequestWithItems.stream()
+                    .forEach(a -> a.addItems(allByRequestIds));
+
+        }
 
         return listRequestWithItems;
 
@@ -73,15 +81,23 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         List<Long> listRequestId = listRequestWithItems.stream().map(ItemRequestWithItems::getId).collect(Collectors.toList());
 
-        Map<Long, List<Item>> mapItem = itemRepository.findAllByRequestIds(listRequestId).stream()
-                .collect(Collectors.groupingBy(item -> item.getRequestId(), Collectors.toList()));
+        List<Item> allByRequestIds = itemRepository.findAllByRequestIds(listRequestId);
 
-        listRequestWithItems.stream()
-                .forEach(request -> {
-                    List<Item> listItem = mapItem.getOrDefault(request.getId(), List.of());
+        if (!allByRequestIds.isEmpty()) {
+            Map<Long, List<Item>> mapItem = allByRequestIds.stream()
+                    .collect(Collectors.groupingBy(item -> item.getRequestId(), Collectors.toList()));
 
-                    request.addItems(listItem);
-                });
+            listRequestWithItems.stream()
+                    .forEach(request -> {
+                        List<Item> listItem = mapItem.getOrDefault(request.getId(), List.of());
+
+                        request.addItems(listItem);
+                    });
+        } else {
+            listRequestWithItems.stream()
+                    .forEach(a -> a.addItems(allByRequestIds));
+
+        }
 
         return listRequestWithItems;
     }

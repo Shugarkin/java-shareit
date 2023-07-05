@@ -30,9 +30,12 @@ public class ItemControllerTest {
     @InjectMocks
     ItemController itemController;
 
+    private long userId = 1L;
+
+    private long itemId = 1L;
+
     @Test
     void createItemTest() {
-        long userId = 1L;
         Item item = Item.builder().build();
         ItemDto itemDto = ItemMapper.toItemDto(item);
 
@@ -45,8 +48,6 @@ public class ItemControllerTest {
 
     @Test
     void findItemTest() {
-        long userId = 1L;
-        long itemId = 1L;
         ItemWithBookingAndComment item = ItemWithBookingAndComment.builder().build();
         List<CommentReceiving> comment = List.of();
         item.setComments(comment);
@@ -61,8 +62,6 @@ public class ItemControllerTest {
 
     @Test
     void updateItemTest() {
-        long itemId = 1L;
-        long userId = 1L;
         Item item = Item.builder().name("палка").build();
         ItemDto itemDto = ItemMapper.toItemDto(item);
 
@@ -75,7 +74,6 @@ public class ItemControllerTest {
 
     @Test
     void findAllItemByUserTest() {
-        long userId = 1L;
         ItemWithBookingAndComment item = ItemWithBookingAndComment.builder().build();
         List<CommentReceiving> comment = List.of();
         item.addComments(comment);
@@ -95,7 +93,6 @@ public class ItemControllerTest {
 
     @Test
     void searchTest() {
-        long userId = 1L;
         String text = "asd";
         int from = 0;
         int size = 10;
@@ -111,8 +108,6 @@ public class ItemControllerTest {
 
     @Test
     void createCommentTest() {
-        long userId = 1L;
-        long itemId = 1L;
         Item item = Item.builder().id(1L).build();
         User user = User.builder().name("fdfds").build();
 

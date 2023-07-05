@@ -25,9 +25,13 @@ public class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
+
+    private UserDto userDto = UserDto.builder().name("Алеша").email("alesha@.yandex.ru").build();
+
+    private long userId = 1L;
+
     @Test
     void createUserTest() {
-        UserDto userDto = UserDto.builder().name("Алеша").email("alesha@.yandex.ru").build();
         User user = UserMapper.toUser(userDto);
         Mockito.when(userService.createUser(user)).thenReturn(user);
 
@@ -38,19 +42,19 @@ public class UserControllerTest {
 
     @Test
     void updateUserTest() {
-        UserDto userDto = UserDto.builder().id(1L).name("Алеша").email("alesha@.yandex.ru").build();
         User user = UserMapper.toUser(userDto);
         user.setName("Григорий");
-        Mockito.when(userService.updateUser(1L, user)).thenReturn(user);
+        Mockito.when(userService.updateUser(userId, user)).thenReturn(user);
         userDto.setName("Григорий");
-        User newUser = UserMapper.toUser(userController.updateUser(1L, userDto));
+        User newUser = UserMapper.toUser(userController.updateUser(userId, userDto));
 
         Assertions.assertEquals(user, newUser);
     }
 
     @Test
     void findAllUsersTest() {
-        List<User> listUser = List.of(User.builder().id(1L).name("Алеша").email("alesha@.yandex.ru").build());
+        User user = UserMapper.toUser(userDto);
+        List<User> listUser = List.of(user);
 
         Mockito.when(userService.findAllUsers()).thenReturn(listUser);
 
@@ -61,20 +65,19 @@ public class UserControllerTest {
 
     @Test
     void findUserTest() {
-        UserDto userDto = UserDto.builder().id(1L).name("Алеша").email("alesha@.yandex.ru").build();
         User user = UserMapper.toUser(userDto);
 
-        Mockito.when(userService.findUserById(1L)).thenReturn(user);
+        Mockito.when(userService.findUserById(userId)).thenReturn(user);
 
-        User newUser = UserMapper.toUser(userController.findUser(1L));
+        User newUser = UserMapper.toUser(userController.findUser(userId));
 
         Assertions.assertEquals(user, newUser);
     }
 
     @Test
     void deleteUserTest() {
-        long userId = 1L;
-        userController.deleteUser(1L);
+
+        userController.deleteUser(userId);
         Mockito.verify(userService, Mockito.times(1)).deleteUser(userId);
     }
 }

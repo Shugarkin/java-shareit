@@ -9,17 +9,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.practicum.shareit.booking.model.SmallBooking;
 import ru.practicum.shareit.item.ItemService.ItemService;
 import ru.practicum.shareit.item.controller.ItemController;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithBookingAndComment;
 import ru.practicum.shareit.item.dto.ItemSearch;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
-import ru.practicum.shareit.item.model.CommentReceiving;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemWithBookingAndComment;
 import ru.practicum.shareit.user.model.User;
@@ -29,7 +26,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.RequestEntity.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,11 +42,15 @@ public class ItemControllerITTest {
     @MockBean
     private ItemService itemService;
 
+    private long userId = 1L;
+
+    private long itemId = 1L;
+    private Item item = Item.builder().name("asd").available(true).description("asdf").build();
+
     @SneakyThrows
     @Test
     void createItemTest() {
-        long userId = 1L;
-        Item item = Item.builder().name("asd").available(true).description("asdf").build();
+
         ItemDto itemDto = ItemMapper.toItemDto(item);
 
         when(itemService.createItem(userId, item)).thenReturn(item);
@@ -70,7 +70,6 @@ public class ItemControllerITTest {
     @SneakyThrows
     @Test
     void createItemNotValid() {
-        long userId = 1L;
         Item item = Item.builder().name("asd").available(true).build();
         Item item1 = Item.builder().name("asd").description("asdf").build();
         Item item2 = Item.builder().available(true).description("asdf").build();
@@ -120,8 +119,6 @@ public class ItemControllerITTest {
     @SneakyThrows
     @Test
     void findItem() {
-        long userId = 1L;
-        long itemId = 1L;
         ItemWithBookingAndComment item = ItemWithBookingAndComment.builder()
                 .id(itemId).name("asd").available(true).description("asdf").lastBooking(null).nextBooking(null).comments(List.of()).build();
 
@@ -138,10 +135,6 @@ public class ItemControllerITTest {
     @SneakyThrows
     @Test
     void updateItemTest() {
-        long userId = 1L;
-        long itemId = 1L;
-        Item item = Item.builder()
-                .id(itemId).name("asd").available(true).description("asdf").build();
         ItemDto itemDto = ItemMapper.toItemDto(item);
 
         when(itemService.updateItem(userId, itemId, item)).thenReturn(item);
@@ -161,7 +154,6 @@ public class ItemControllerITTest {
     @SneakyThrows
     @Test
     void findAllItemByUserTest() {
-        long userId = 1L;
         List<ItemWithBookingAndComment> itemList =  List.of();
 
         int from = 0;
@@ -179,7 +171,6 @@ public class ItemControllerITTest {
     @SneakyThrows
     @Test
     void searchTest() {
-        long userId = 1L;
         String text = "asd";
 
         int from = 0;
@@ -198,8 +189,6 @@ public class ItemControllerITTest {
     @SneakyThrows
     @Test
     void createCommentTest() {
-        long userId = 1L;
-        long itemId = 1L;
         Comment comment = Comment.builder()
                 .id(1L)
                 .create(LocalDateTime.now().withNano(0))

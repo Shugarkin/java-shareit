@@ -10,8 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.controller.UserController;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -32,10 +30,12 @@ public class UserControllerITTest {
     @MockBean
     private UserService userService;
 
+
+    private long userId = 1L;
+
     @SneakyThrows
     @Test
     void findUserTest() {
-        long userId = 1L;
         User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
 
         when(userService.findUserById(userId)).thenReturn(user);
@@ -49,7 +49,6 @@ public class UserControllerITTest {
     @SneakyThrows
     @Test
     void createUserTest() {
-        long userId = 0L;
 
         User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
         when(userService.createUser(user)).thenReturn(user);
@@ -68,7 +67,6 @@ public class UserControllerITTest {
     @SneakyThrows
     @Test
     void notCreateNotValidUserTest() {
-        long userId = 0L;
 
         User userNotValid = User.builder().id(userId).name("dgs").email(null).build();
         mockMvc.perform(post("/users", userNotValid)
@@ -98,7 +96,6 @@ public class UserControllerITTest {
 
     @Test
     void deleteUserTest() {
-        long userId = 1L;
 
         userService.deleteUser(userId);
 

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolationException;
-import java.lang.reflect.InvocationTargetException;
 
 @RestControllerAdvice("ru.practicum.shareit")
 @Slf4j

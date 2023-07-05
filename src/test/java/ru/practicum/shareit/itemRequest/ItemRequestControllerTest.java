@@ -11,7 +11,6 @@ import ru.practicum.shareit.request.dto.ItemRequestDtoReceived;
 import ru.practicum.shareit.request.dto.ItemRequestWithItemsDto;
 import ru.practicum.shareit.request.mapper.RequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.request.model.ItemRequestSearch;
 import ru.practicum.shareit.request.model.ItemRequestWithItems;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -31,9 +30,20 @@ public class ItemRequestControllerTest {
     @InjectMocks
     private ItemRequestController itemRequestController;
 
+
+    private ItemRequestWithItems item = ItemRequestWithItems.builder()
+            .items(List.of())
+            .id(1L)
+            .created(LocalDateTime.now())
+            .description("sdsaf")
+            .build();
+
+
+    private long userId = 1L;
+    private long itemId = 1L;
+
     @Test
     void addRequestTest() {
-        long userId = 1L;
         ItemRequestDtoReceived itemRequestDtoReceived = ItemRequestDtoReceived.builder().build();
         ItemRequest itemRequest = ItemRequest.builder().build();
         ItemRequestDto itemRequestDto = RequestMapper.toRequestDto(itemRequest);
@@ -46,14 +56,8 @@ public class ItemRequestControllerTest {
 
     @Test
     void findListRequestUserTest() {
-        long userId = 1L;
 
-        List<ItemRequestWithItems> list = List.of(ItemRequestWithItems.builder()
-                        .items(List.of())
-                        .id(1L)
-                        .created(LocalDateTime.now())
-                        .description("sdsaf")
-                        .build());
+        List<ItemRequestWithItems> list = List.of(item);
 
         when(itemRequestService.findListRequestUser(userId)).thenReturn(list);
 
@@ -66,16 +70,10 @@ public class ItemRequestControllerTest {
 
     @Test
     void findListRequestTest() {
-        long userId = 1L;
         int from = 1;
         int size = 10;
 
-        List<ItemRequestWithItems> list = List.of(ItemRequestWithItems.builder()
-                .items(List.of())
-                .id(1L)
-                .created(LocalDateTime.now())
-                .description("sdsaf")
-                .build());
+        List<ItemRequestWithItems> list = List.of(item);
 
         when(itemRequestService.findListRequest(userId, from, size)).thenReturn(list);
 
@@ -88,19 +86,10 @@ public class ItemRequestControllerTest {
 
     @Test
     void findItemRequestTest() {
-        long userId = 1L;
-        long itemId = 1L;
 
-        ItemRequestWithItems items = ItemRequestWithItems.builder()
-                .items(List.of())
-                .id(1L)
-                .created(LocalDateTime.now())
-                .description("sdsaf")
-                .build();
+        when(itemRequestService.findItemRequest(userId, itemId)).thenReturn(item);
 
-        when(itemRequestService.findItemRequest(userId, itemId)).thenReturn(items);
-
-        ItemRequestWithItemsDto itemRequest = RequestMapper.toRequestWithItemsDto(items);
+        ItemRequestWithItemsDto itemRequest = RequestMapper.toRequestWithItemsDto(item);
 
         ItemRequestWithItemsDto itemRequestNew = itemRequestController.findItemRequest(userId, itemId);
 
