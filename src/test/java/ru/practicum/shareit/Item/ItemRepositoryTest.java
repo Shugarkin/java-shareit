@@ -51,6 +51,7 @@ public class ItemRepositoryTest {
 
     private ItemRequest itemRequest = ItemRequest.builder()
             .description("qwe").id(itemRequestId).userId(userId).created(LocalDateTime.now().withNano(0)).build();
+
     @BeforeEach
     void before() {
         user = userRepository.save(user);

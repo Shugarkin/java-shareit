@@ -46,6 +46,7 @@ public class BookingControllerITTest {
     private Item item;
 
     private long itemId = 1L;
+
     private long userId = 1L;
 
     private long bookingId = 1L;
@@ -55,6 +56,7 @@ public class BookingControllerITTest {
     private LocalDateTime finish;
 
     private Booking booking;
+
     @BeforeEach
     void before() {
         user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();

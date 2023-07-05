@@ -77,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingSearch> findListBooking(long userId, State state, int from, int size) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Юзер не найден"));
 
-        Pageable pageable = PageRequest.of(from > 0 ? from/size : 0, size, Sort.by("start").descending());
+        Pageable pageable = PageRequest.of(from > 0 ? from / size : 0, size, Sort.by("start").descending());
 
         switch (state) {
             case CURRENT:
@@ -101,7 +101,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingSearch> findListOwnerBooking(long userId, State state, int from, int size) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Юзер не найден"));
 
-        Pageable pageable = PageRequest.of(from > 0 ? from/size : 0, size, Sort.by("start").descending());
+        Pageable pageable = PageRequest.of(from > 0 ? from / size : 0, size, Sort.by("start").descending());
 
         switch (state) {
             case CURRENT:

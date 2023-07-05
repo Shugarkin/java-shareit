@@ -102,7 +102,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemWithBookingAndComment> findAllItemByUser(Long userId, int from, int size) {
 
-        Pageable pageable = PageRequest.of(from > 0 ? from/size : 0, size);
+        Pageable pageable = PageRequest.of(from > 0 ? from / size : 0, size);
 
         List<ItemWithBookingAndComment> result = itemRepository.findAllByOwnerId(userId, pageable)
                 .stream()
@@ -153,7 +153,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemSearch> search(Long userId, String text, int from, int size) {
 
-        Pageable pageable = PageRequest.of(from > 0 ? from/size : 0, size);
+        Pageable pageable = PageRequest.of(from > 0 ? from / size : 0, size);
 
         if (text.isBlank()) {
             return List.of();

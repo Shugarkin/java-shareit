@@ -108,7 +108,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         ItemRequestWithItems request = RequestMapper
                 .toItemRequestWithItemsFromItemRequestSearch(itemRequestRepository.findById(requestId)
-                .orElseThrow(() ->new EntityNotFoundException("Нет запроса с данный айди")));
+                .orElseThrow(() -> new EntityNotFoundException("Нет запроса с данный айди")));
 
         List<Item> listItem = itemRepository.findAllByRequestId(requestId);
 

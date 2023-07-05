@@ -79,7 +79,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select new ru.practicum.shareit.booking.dto.BookingSearch(b.id, b.start, b.finish, b.status, b.item, b.item.id, b.booker) " +
             "from Booking as b " +
             "where b.item.id = ?1 and b.booker.id = ?2 and b.status = ?3 and b.finish < now() " +
-            "order by b.start desc " )
+            "order by b.start desc ")
     List<BookingSearch> findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(Long itemId, Long userId,
                                                                                  Status status, Pageable pageable);
 

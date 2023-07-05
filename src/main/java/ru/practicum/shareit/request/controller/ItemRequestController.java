@@ -26,7 +26,7 @@ public class ItemRequestController {
     @PostMapping
     public ItemRequestDto addRequest(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                      @RequestBody @Valid ItemRequestDtoReceived requestDto) {
-        ItemRequest request = itemRequestService.addRequest(RequestMapper.toRequest(requestDto), userId) ;
+        ItemRequest request = itemRequestService.addRequest(RequestMapper.toRequest(requestDto), userId);
         return RequestMapper.toRequestDto(request);
     }
 
@@ -39,7 +39,7 @@ public class ItemRequestController {
     @GetMapping("/all")
     public List<ItemRequestWithItemsDto> findListRequest(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                                          @Min(0) @RequestParam(defaultValue = "0")  int from,
-                                                         @Min(1) @RequestParam(defaultValue = "10")  int size ) {
+                                                         @Min(1) @RequestParam(defaultValue = "10")  int size) {
         return RequestMapper.toListRequestWithItemsDto(itemRequestService.findListRequest(userId, from, size));
     }
 

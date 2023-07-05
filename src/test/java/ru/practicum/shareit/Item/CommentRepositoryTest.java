@@ -99,6 +99,7 @@ public class CommentRepositoryTest {
         bookingRepository.deleteAll();
         commentRepository.deleteAll();
     }
+
     @Test
     void findAllByUserIdTest() {
         List<Comment> allByUserId = commentRepository.findAllByUserId(userIdBooking);
