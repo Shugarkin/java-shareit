@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.exception.EmailDuplicateException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
@@ -34,6 +35,18 @@ public class UserServiceImplTest {
 
         Assertions.assertEquals(user, newUser);
 
+    }
+
+
+    @Test
+    void createUserDuplicate() {
+        User user = User.builder().email("asd@.mail.ru").build();
+        User user1 = User.builder().email("asd@.mail.ru").build();
+
+        Mockito.when(userRepository.save(user)).thenReturn(user);
+        Mockito.when(userRepository.save(user1)).thenThrow(EmailDuplicateException.class);
+
+        Assertions.assertThrows(EmailDuplicateException.class, () -> userService.createUser(user1));
     }
 
     @Test
@@ -82,6 +95,7 @@ public class UserServiceImplTest {
 
         Mockito.verify(userRepository, Mockito.never()).save(user);
     }
+
 
     @Test
     void findAllUsers() {

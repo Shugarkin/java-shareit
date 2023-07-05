@@ -88,4 +88,21 @@ public class ItemRequestServiceImplTest {
 
         assertNotEmpty(listRequest, "не пуст");
     }
+
+    @Test
+    void findItemRequest() {
+        long itemRequestId = 1L;
+        long userId = 1L;
+        ItemRequestSearch item = new ItemRequestSearch();
+
+        when(userRepository.existsById(userId)).thenReturn(true);
+
+        when(itemRequestRepository.findById(itemRequestId)).thenReturn(Optional.of(item));
+
+        when(itemRepository.findAllByRequestId(itemRequestId)).thenReturn(List.of());
+
+        ItemRequestWithItems itemRequest = itemRequestService.findItemRequest(userId, itemRequestId);
+
+        assertNotNull(itemRequest);
+    }
 }

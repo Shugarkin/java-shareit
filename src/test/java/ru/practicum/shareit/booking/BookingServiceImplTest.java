@@ -14,6 +14,8 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
+import ru.practicum.shareit.exception.AvailableException;
+import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserRepository;
@@ -24,6 +26,7 @@ import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,6 +67,27 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    void postBookingNotValid() {
+        long userId = 1L;
+        long itemId = 1L;
+        long userIdBooker = 2L;
+
+        User user = User.builder().id(userId).build();
+        Item item = Item.builder().id(itemId).owner(user).available(false).build();
+        Booking booking = Booking.builder().item(item).build();
+
+        when(itemRepository.findById(booking.getItem().getId())).thenReturn(Optional.of(item));
+
+        assertThrows(AvailableException.class, () -> bookingService.postBooking(userIdBooker, booking));
+
+        item.setAvailable(true);
+
+        when(itemRepository.findById(booking.getItem().getId())).thenReturn(Optional.of(item));
+
+        assertThrows(EntityNotFoundException.class, () -> bookingService.postBooking(userId, booking));
+    }
+
+    @Test
     void approvedBooking() {
         long userId = 1L;
         long bookingId = 1L;
@@ -80,6 +104,28 @@ public class BookingServiceImplTest {
         Booking booking1 = bookingService.approvedBooking(userId, bookingId, true);
 
         assertNotNull(booking1);
+
+    }
+
+    @Test
+    void approvedBookingNotValid() {
+        long userId = 1L;
+        long bookingId = 1L;
+        long itemId = 1L;
+
+        User user = User.builder().id(userId).build();
+        Item item = Item.builder().id(itemId).owner(user).available(true).build();
+        Booking booking = Booking.builder().status(Status.APPROVED).item(item).build();
+
+        when(bookingRepository.existsByItemOwnerIdOrBookerId(userId, userId)).thenReturn(false);
+
+        assertThrows(AvailableException.class, () -> bookingService.approvedBooking(userId, bookingId, true));
+
+        when(bookingRepository.existsByItemOwnerIdOrBookerId(userId, userId)).thenReturn(true);
+
+        when(bookingRepository.findByIdAndItemOwnerId(bookingId, userId)).thenReturn(Optional.of(booking));
+
+        assertThrows(AvailableException.class, () -> bookingService.approvedBooking(userId, bookingId, true));
     }
 
     @Test
@@ -140,6 +186,19 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    void findListBookingNotValid() {
+        long userId = 1L;
+        int from = 0;
+        int size = 10;
+
+        User user = User.builder().id(userId).build();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        assertThrows(EntityNotFoundException.class, () -> bookingService.findListBooking(userId, State.TEST, from, size));
+    }
+
+    @Test
     void findListOwnerBooking() {
         long userId = 1L;
         long itemId = 1L;
@@ -176,5 +235,18 @@ public class BookingServiceImplTest {
         when(bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking5 = bookingService.findListOwnerBooking(userId, State.ALL, from, size);
         assertNotEmpty(listBooking5, "не пуст");
+    }
+
+    @Test
+    void findListOwnerBookingNotValid() {
+        long userId = 1L;
+        int from = 0;
+        int size = 10;
+
+        User user = User.builder().id(userId).build();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        assertThrows(EntityNotFoundException.class, () -> bookingService.findListOwnerBooking(userId, State.TEST, from, size));
     }
 }
