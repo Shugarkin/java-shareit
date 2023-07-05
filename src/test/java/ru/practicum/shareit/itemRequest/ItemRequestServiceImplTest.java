@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -104,5 +106,15 @@ public class ItemRequestServiceImplTest {
         ItemRequestWithItems itemRequest = itemRequestService.findItemRequest(userId, itemRequestId);
 
         assertNotNull(itemRequest);
+    }
+
+    @Test
+    void findItemRequestNotValid() {
+        long itemRequestId = 1L;
+        long userId = 1L;
+
+        when(userRepository.existsById(userId)).thenReturn(false);
+
+        assertThrows(EntityNotFoundException.class, () ->  itemRequestService.findItemRequest(userId, itemRequestId));
     }
 }
