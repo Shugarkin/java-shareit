@@ -57,7 +57,7 @@ public class BookingServiceImplTest {
 
         when(userRepository.findById(userIdBooker)).thenReturn(Optional.of(user1));
 
-        when(bookingRepository.save(booking)).thenReturn(booking).thenReturn(booking);
+        when(bookingRepository.save(booking)).thenReturn(booking);
 
         Booking booking1 = bookingService.postBooking(userIdBooker, booking);
 

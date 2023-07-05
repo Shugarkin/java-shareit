@@ -64,7 +64,7 @@ public class BookingRepositoryTest {
         //это все для того чтобы обойти присвоение id самой бд и не писать кучу однотипного кода,
         // а так же чтобы не угадывать каждый раз что присвоило бд в других классах
         user = userRepository.save(user);
-        userId =user.getId();
+        userId = user.getId();
 
         item.setOwner(user);
         item = itemRepository.save(item);
@@ -89,8 +89,6 @@ public class BookingRepositoryTest {
     @Test
     void findBookingTest() {
 
-        bookingRepository.save(booking);
-
         Optional<BookingSearch> booking1 = bookingRepository.findBooking(bookingId, userId, userId);
 
         Assertions.assertNotNull(booking1);
@@ -111,8 +109,6 @@ public class BookingRepositoryTest {
     @Test
     void findAllByBookerIdAndStatusOrderByStartDescTest() {
 
-        bookingRepository.save(booking);
-
         List<BookingSearch> allByBookerIdAndStateCurrent = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId2, Status.WAITING, pageable);
 
         assertNotEmpty(allByBookerIdAndStateCurrent, "не пустой");
@@ -120,8 +116,6 @@ public class BookingRepositoryTest {
 
     @Test
     void findAllByItemOwnerIdAndStatusOrderByStartDesc() {
-
-        bookingRepository.save(booking);
 
         List<BookingSearch> allByBookerIdAndStateCurrent = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING, pageable);
 
@@ -131,7 +125,6 @@ public class BookingRepositoryTest {
     @Test
     void findAllByItemOwnerIdOrderByStartDescTest() {
 
-        bookingRepository.save(booking);
 
         List<BookingSearch> allByBookerIdAndStateCurrent = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable);
 
@@ -141,7 +134,6 @@ public class BookingRepositoryTest {
     @Test
     void findByIdAndItemOwnerIdTest() {
 
-        bookingRepository.save(booking);
 
         Optional<Booking> byIdAndItemOwnerId = bookingRepository.findByIdAndItemOwnerId(bookingId, userId);
 
@@ -151,8 +143,6 @@ public class BookingRepositoryTest {
     @Test
     void existsByItemOwnerIdOrBookerIdTest() {
 
-        bookingRepository.save(booking);
-
         boolean answer = bookingRepository.existsByItemOwnerIdOrBookerId(userId, userId2);
 
         Assertions.assertTrue(answer);
@@ -161,8 +151,6 @@ public class BookingRepositoryTest {
     @Test
     void findAllByItemOwnerIdOrderByStartTest() {
 
-        bookingRepository.save(booking);
-
         List<Booking> allByItemOwnerIdOrderByStart = bookingRepository.findAllByItemOwnerIdOrderByStart(userId);
 
         assertNotEmpty(allByItemOwnerIdOrderByStart, "не пустой");
@@ -170,8 +158,6 @@ public class BookingRepositoryTest {
 
     @Test
     void findAllByBookerIdOrderByStartDescTest() {
-
-        bookingRepository.save(booking);
 
         List<BookingSearch> allByBookerIdOrderByStartDesc = bookingRepository.findAllByBookerIdOrderByStartDesc(userId2, pageable);
 

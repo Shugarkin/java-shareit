@@ -37,6 +37,7 @@ public class BookingControllerTest {
         long itemId = 1L;
         Item item = Item.builder().id(itemId).build();
         User user = User.builder().id(userId).build();
+
         Booking booking = Booking.builder().item(item).build();
         BookingDtoReceived bookingDtoReceived = BookingDtoReceived.builder().itemId(itemId).build();
         Booking booking1 = BookingMapper.fromBookingDtoReceivedToBooking(bookingDtoReceived);
