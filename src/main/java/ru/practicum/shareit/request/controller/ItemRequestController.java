@@ -39,8 +39,6 @@ public class ItemRequestController {
         return RequestMapper.toListRequestWithItemsDto(list);
     }
 
-    //GET /requests/all?from={from}&size={size}
-
     @GetMapping("/all")
     public List<ItemRequestWithItemsDto> findListRequest(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                                          @Min(0) @RequestParam(defaultValue = "0")  int from,

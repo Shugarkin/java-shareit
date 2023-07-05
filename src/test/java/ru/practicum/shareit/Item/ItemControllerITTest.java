@@ -2,14 +2,11 @@ package ru.practicum.shareit.Item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.booking.model.SmallBooking;
@@ -93,6 +90,8 @@ public class ItemControllerITTest {
                 .getResponse()
                 .getContentAsString();
 
+        when(itemService.createItem(userId, item)).thenReturn(item1);
+
         mockMvc.perform(post("/items", itemDto1)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", userId)
@@ -101,6 +100,8 @@ public class ItemControllerITTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
+
+        when(itemService.createItem(userId, item)).thenReturn(item2);
 
         mockMvc.perform(post("/items", itemDto2)
                         .contentType("application/json")

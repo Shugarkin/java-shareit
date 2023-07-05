@@ -49,21 +49,23 @@ public class ItemRepositoryTest {
     private User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
 
     private Item item = Item.builder()
-            .id(itemId).name("asd").available(true).description("asdf").owner(user).build();
+            .id(itemId).name("asd").available(true).description("asdf").requestId(itemRequestId).owner(user).build();
 
     private ItemRequest itemRequest = ItemRequest.builder()
             .description("qwe").id(itemRequestId).userId(userId).created(LocalDateTime.now().withNano(0)).build();
     @BeforeEach
     void before() {
         user = userRepository.save(user);
-        userId =user.getId();
-
-        item.setOwner(user);
-        item = itemRepository.save(item);
-        itemId = item.getId();
+        userId = user.getId();
 
         itemRequest.setUserId(userId);
         itemRequest = itemRequestRepository.save(itemRequest);
+        itemRequestId = itemRequest.getId();
+
+        item.setOwner(user);
+        item.setRequestId(itemRequestId);
+        item = itemRepository.save(item);
+        itemId = item.getId();
     }
 
     @AfterEach
@@ -99,12 +101,18 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    void findAllByRequestIdTest() {
+    void findAllByRequestIdsTest() {
+        List<Long> list = List.of(itemRequestId);
 
-        List<Long> list = List.of(1L);
         List<Item> allByRequestId = itemRepository.findAllByRequestIds(list);
 
         assertNotEmpty(allByRequestId, "не пуст");
     }
 
+    @Test
+    void findAllByRequestIdTest() {
+        List<Item> allByRequestId = itemRepository.findAllByRequestId(itemRequestId);
+
+        assertNotEmpty(allByRequestId, "не пуст");
+    }
 }

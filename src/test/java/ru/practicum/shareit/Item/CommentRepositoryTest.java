@@ -1,5 +1,7 @@
 package ru.practicum.shareit.Item;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -35,81 +37,77 @@ public class CommentRepositoryTest {
 
     //тоже самое, что и с тестами itemRepository
 
+    long itemId = 1L;
+    long userId = 1L;
+
+    long userIdBooking = 1L;
+
+    private User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
+
+
+    private User userBooking = User.builder().id(userIdBooking).name("dgsasd").email("f@mail.com").build();
+
+
+    private Item item = Item.builder()
+            .id(itemId)
+            .name("asd")
+            .available(true)
+            .description("asdf").owner(user)
+            .build();
+
+
+    private Booking booking = Booking.builder().status(Status.APPROVED)
+            .booker(userBooking)
+            .item(item)
+            .start(LocalDateTime.now())
+            .finish(LocalDateTime.now().plusNanos(1))
+            .build();
+
+
+    private Comment comment = Comment.builder()
+            .text("asdf")
+            .item(item)
+            .create(LocalDateTime.now())
+            .user(userBooking)
+            .build();
+
+    @BeforeEach
+    void before() {
+        user = userRepository.save(user);
+        userId = user.getId();
+
+        userBooking = userRepository.save(userBooking);
+        userIdBooking = userBooking.getId();
+
+        item.setOwner(user);
+        item = itemRepository.save(item);
+        itemId = item.getId();
+
+        booking.setBooker(userBooking);
+        booking.setItem(item);
+        booking = bookingRepository.save(booking);
+
+        comment.setItem(item);
+        comment.setUser(userBooking);
+        comment = commentRepository.save(comment);
+    }
+
+    @AfterEach
+    void after() {
+        userRepository.deleteAll();
+        itemRepository.deleteAll();
+        bookingRepository.deleteAll();
+        commentRepository.deleteAll();
+    }
     @Test
     void findAllByUserIdTest() {
-        long itemId = 6L;
-        long userId = 6L;
-
-        User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
-        userRepository.save(user);
-
-        User userBooking = User.builder().id(userId).name("dgsasd").email("f@mail.com").build();
-        userRepository.save(user);
-
-        Item item = Item.builder()
-                .id(itemId)
-                .name("asd")
-                .available(true)
-                .description("asdf").owner(user)
-                .build();
-        itemRepository.save(item);
-
-        Booking booking = Booking.builder().status(Status.APPROVED)
-                .booker(userBooking)
-                .item(item)
-                .start(LocalDateTime.now())
-                .finish(LocalDateTime.now().plusNanos(1))
-                .build();
-        bookingRepository.save(booking);
-
-        Comment comment = Comment.builder()
-                .text("asdf")
-                .item(item)
-                .create(LocalDateTime.now())
-                .user(userBooking)
-                .build();
-        commentRepository.save(comment);
-
-        List<Comment> allByUserId = commentRepository.findAllByUserId(userId);
+        List<Comment> allByUserId = commentRepository.findAllByUserId(userIdBooking);
 
         assertEquals(1, allByUserId.size());
     }
 
     @Test
     void findAllByItemId() {
-        long itemId = 5L;
-        long userId = 5L;
-
-        User user = User.builder().id(userId).name("dgs").email("fdsjnfj@mail.com").build();
-        userRepository.save(user);
-
-        User userBooking = User.builder().id(userId).name("dgsasd").email("f@mail.com").build();
-        userRepository.save(user);
-
-        Item item = Item.builder()
-                .id(itemId)
-                .name("asd")
-                .available(true)
-                .description("asdf").owner(user)
-                .build();
-        itemRepository.save(item);
-
-        Booking booking = Booking.builder().status(Status.APPROVED)
-                .booker(userBooking)
-                .item(item)
-                .start(LocalDateTime.now())
-                .finish(LocalDateTime.now().plusNanos(1))
-                .build();
-        bookingRepository.save(booking);
-
-        Comment comment = Comment.builder()
-                .text("asdf")
-                .item(item)
-                .create(LocalDateTime.now())
-                .user(userBooking)
-                .build();
-        commentRepository.save(comment);
-
         List<Comment> allByItemId = commentRepository.findAllByItemId(itemId);
 
         assertEquals(1, allByItemId.size());

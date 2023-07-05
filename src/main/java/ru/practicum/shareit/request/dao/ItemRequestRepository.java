@@ -19,12 +19,6 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
             "order by ir.created ")
     List<ItemRequestSearch> findAllByUserId(long userId);
 
-//    @Query("select new ru.practicum.shareit.request.model.ItemRequestSearch(ir.id, ir.description, ir.created) " +
-//            "from ItemRequest as ir " +
-//            "where not ir.userId = ?1 " +
-//            "order by ir.created ")
-//    Page<ItemRequestSearch> findAllByUserIdNotOrderByCreated(long userId, Pageable pageable);
-
     @Query("select new ru.practicum.shareit.request.model.ItemRequestSearch(ir.id, ir.description, ir.created) " +
             "from ItemRequest as ir " +
             "where not ir.userId = ?1 ")

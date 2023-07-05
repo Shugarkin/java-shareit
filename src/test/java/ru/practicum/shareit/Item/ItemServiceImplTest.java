@@ -224,7 +224,6 @@ public class ItemServiceImplTest {
         Pageable pageable = PageRequest.of(from, size);
 
         Comment newComment = Comment.builder().build();
-        LocalDateTime time = LocalDateTime.now();
 
         when(bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
                 Status.APPROVED, pageable)).thenThrow(CommentException.class);
