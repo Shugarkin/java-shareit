@@ -194,4 +194,25 @@ public class BookingControllerITTest {
         verify(bookingService).findListOwnerBooking(userId, state, from, size);
     }
 
+    @SneakyThrows
+    @Test
+    void postBookingBadRequest() {
+        BookingDtoReceived bookingDtoReceived = BookingDtoReceived.builder()
+                .start(start)
+                .end(finish)
+                .build();
+
+        when(bookingService.postBooking(any(), any())).thenReturn(booking);
+
+        mockMvc.perform(post("/bookings", bookingDtoReceived)
+                        .contentType("application/json")
+                        .header("X-Sharer-User-Id", userId)
+                        .content(objectMapper.writeValueAsString(bookingDtoReceived))
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+    }
+
 }

@@ -52,21 +52,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         List<Item> allByRequestIds = itemRepository.findAllByRequestIds(listRequestId);
 
-        if (!allByRequestIds.isEmpty()) {
-            Map<Long, List<Item>> mapItem = allByRequestIds.stream()
-                    .collect(Collectors.groupingBy(item -> item.getRequestId(), Collectors.toList()));
-
-            listRequestWithItems.stream()
-                    .forEach(request -> {
-                        List<Item> listItem = mapItem.getOrDefault(request.getId(), List.of());
-
-                        request.addItems(listItem);
-                    });
-        } else {
-            listRequestWithItems.stream()
-                    .forEach(a -> a.addItems(allByRequestIds));
-
-        }
+        addItems(allByRequestIds, listRequestWithItems);
 
         return listRequestWithItems;
 
@@ -83,21 +69,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         List<Item> allByRequestIds = itemRepository.findAllByRequestIds(listRequestId);
 
-        if (!allByRequestIds.isEmpty()) {
-            Map<Long, List<Item>> mapItem = allByRequestIds.stream()
-                    .collect(Collectors.groupingBy(item -> item.getRequestId(), Collectors.toList()));
-
-            listRequestWithItems.stream()
-                    .forEach(request -> {
-                        List<Item> listItem = mapItem.getOrDefault(request.getId(), List.of());
-
-                        request.addItems(listItem);
-                    });
-        } else {
-            listRequestWithItems.stream()
-                    .forEach(a -> a.addItems(allByRequestIds));
-
-        }
+        addItems(allByRequestIds, listRequestWithItems);
 
         return listRequestWithItems;
     }
@@ -112,7 +84,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         List<Item> listItem = itemRepository.findAllByRequestId(requestId);
 
-        request.addItems(listItem);
+        request.setItems(listItem);
         return request;
     }
 
@@ -120,6 +92,24 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         boolean answer = userRepository.existsById(userId);
         if (!answer) {
             throw new EntityNotFoundException("Пользователь не найден");
+        }
+    }
+
+    private void addItems(List<Item> allByRequestIds, List<ItemRequestWithItems> listRequestWithItems) {
+        if (!allByRequestIds.isEmpty()) {
+            Map<Long, List<Item>> mapItem = allByRequestIds.stream()
+                    .collect(Collectors.groupingBy(item -> item.getRequestId(), Collectors.toList()));
+
+            listRequestWithItems.stream()
+                    .forEach(request -> {
+                        List<Item> listItem = mapItem.getOrDefault(request.getId(), List.of());
+
+                        request.setItems(listItem);
+                    });
+        } else {
+            listRequestWithItems.stream()
+                    .forEach(a -> a.setItems(List.of()));
+
         }
     }
 

@@ -137,4 +137,25 @@ public class ItemRequestControllerITTest {
 
         assertEquals(requestString, objectMapper.writeValueAsString(itemRequestWithItems));
     }
+
+    @SneakyThrows
+    @Test
+    void addRequestBadRequest() {
+        ItemRequestDtoReceived itemRequestDtoReceived = ItemRequestDtoReceived.builder()
+                .userId(userId)
+                .build();
+
+        when(itemRequestService.addRequest(any(), any())).thenReturn(itemRequest);
+
+        mockMvc.perform(post("/requests", itemRequestDtoReceived)
+                        .contentType("application/json")
+                        .header("X-Sharer-User-Id", userId)
+                        .content(objectMapper.writeValueAsString(itemRequestDtoReceived))
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+    }
 }

@@ -18,7 +18,4 @@ public class ItemRequestWithItems {
 
     private List<Item> items;
 
-    public void addItems(List<Item> list) {
-        items = list;
-    }
 }
