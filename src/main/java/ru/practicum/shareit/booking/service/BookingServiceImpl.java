@@ -93,7 +93,7 @@ public class BookingServiceImpl implements BookingService {
             case ALL:
                 return bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable);
             default:
-                throw new EntityNotFoundException("Неверный запрос");
+                throw new IllegalArgumentException("Неверный запрос");
         }
     }
 
@@ -117,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
             case ALL:
                 return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable);
             default:
-                throw new EntityNotFoundException("Неверный запрос");
+                throw new IllegalArgumentException("Неверный запрос");
         }
     }
 

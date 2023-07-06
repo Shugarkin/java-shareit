@@ -27,8 +27,6 @@ import java.util.Optional;
 import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -189,6 +187,16 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    void findListBookingNotValid() {
+        long userId = 1L;
+        int from = 0;
+        int size = 10;
+
+        assertThrows(IllegalArgumentException.class, () ->
+                bookingService.findListBooking(userId, State.valueOf("Error"), from, size));
+    }
+
+    @Test
     void findListOwnerBooking() {
         long userId = 1L;
         long itemId = 1L;
@@ -227,4 +235,13 @@ public class BookingServiceImplTest {
         assertNotEmpty(listBooking5, "не пуст");
     }
 
+    @Test
+    void findListOwnerBookingNotValid() {
+        long userId = 1L;
+        int from = 0;
+        int size = 10;
+
+        assertThrows(IllegalArgumentException.class, () ->
+                bookingService.findListOwnerBooking(userId, State.valueOf("Error"), from, size));
+    }
 }
