@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Setter
 @Builder
 @Entity
+@ToString
 @Table(name = "items")
 public class Item {
 
@@ -34,6 +35,6 @@ public class Item {
     private User owner;
 
     @Column(name = "request")
-    private Long request;
+    private Long requestId;
 
 }

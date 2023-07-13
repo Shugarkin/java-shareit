@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.ItemService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dao.BookingRepository;
@@ -53,7 +55,7 @@ public class ItemServiceImpl implements ItemService {
         Item item =  itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
         ItemWithBookingAndComment itemWithBooking = ItemMapper.itemWithBooking(item);
 
-        List<CommentReceiving> listCommentDto = CommentMapper.toListCommentReceiving(commentRepository.findAllByItemId(itemId));
+        List<CommentReceiving> listComment = CommentMapper.toListCommentReceiving(commentRepository.findAllByItemId(itemId));
 
         List<Booking> bokklist = bookingRepository.findAllByItemIdAndItemOwnerIdAndStatusOrderByStart(itemId, userId, Status.APPROVED);
 
@@ -72,7 +74,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElse(null);
 
         itemWithBooking.addBooking(lastBooking, nextBooking);
-        itemWithBooking.addComments(listCommentDto);
+        itemWithBooking.addComments(listComment);
         return itemWithBooking;
     }
 
@@ -81,6 +83,7 @@ public class ItemServiceImpl implements ItemService {
     public Item updateItem(Long userId, Long itemId, Item item) {
         Item newItem = itemRepository.findByIdAndOwnerId(itemId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Предмет не найден"));
+
         String name = item.getName();
         String description = item.getDescription();
         Boolean available = item.getAvailable();
@@ -97,14 +100,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingAndComment> findAllItemByUser(Long userId) {
+    public List<ItemWithBookingAndComment> findAllItemByUser(Long userId, int from, int size) {
 
-        List<ItemWithBookingAndComment> result = itemRepository.findAllByOwnerId(userId)
+        Pageable pageable = PageRequest.of(from > 0 ? from / size : 0, size);
+
+        List<ItemWithBookingAndComment> result = itemRepository.findAllByOwnerId(userId, pageable)
                 .stream()
                 .map(a -> ItemMapper.itemWithBooking(a))
                 .collect(Collectors.toList());
 
-        Map<Long, List<CommentReceiving>> listCommentDto = commentRepository.findAllByUserId(userId)
+        Map<Long, List<CommentReceiving>> listComment = commentRepository.findAllByUserId(userId)
                 .stream()
                 .map(a -> CommentMapper.fromCommentToCommentReceiving(a))
                 .collect(Collectors.groupingBy(c -> c.getItem(), Collectors.toList()));
@@ -137,7 +142,7 @@ public class ItemServiceImpl implements ItemService {
         result.stream()
                 .forEach(item -> {
                     List<CommentReceiving> list  =
-                            listCommentDto.getOrDefault(item.getId(), List.of());
+                            listComment.getOrDefault(item.getId(), List.of());
 
                     item.addComments(list);
                 });
@@ -146,23 +151,36 @@ public class ItemServiceImpl implements ItemService {
 }
 
     @Override
-    public List<ItemSearch> search(Long userId, String text) {
+    public List<ItemSearch> search(Long userId, String text, int from, int size) {
+
+        Pageable pageable = PageRequest.of(from > 0 ? from / size : 0, size);
+
         if (text.isBlank()) {
             return List.of();
         }
-        return itemRepository.findItemSearch(text, text);
+        return itemRepository.findItemSearch(text, text, pageable);
     }
 
     @Transactional
     @Override
     public Comment createComment(Long userId, Long itemId, Comment newComment) {
         final LocalDateTime timeNow = LocalDateTime.now();
-        BookingSearch booking = bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
-                        Status.APPROVED, timeNow)
-                .orElseThrow(() -> new CommentException("Пользователь не бронировал вещь"));
+
+        Pageable pageable = PageRequest.of(0, 1);
+        //здесь использовал лист из-за того, что почему то в сравнении с превидущим тз здесь хибер ругается на отсутствие конвертируемого класса
+        //то есть хочет чтобы я явно указал в какой класс следует сохранить, однако, на сколько я понял функции limit в хибере нет
+        //и findFirst не используешь
+        //и чтобы указать, что нужно взять именно одно значение воспользовался Pageable, а он может сохранят только в лист и страницу
+        List<BookingSearch> bookingList = bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
+                        Status.APPROVED, pageable);
+        if (bookingList.isEmpty()) {
+            throw new CommentException("Пользователь не бронировал вещь");
+        }
+        BookingSearch booking = bookingList.get(0);
+
             Comment comment = Comment.builder()
                     .item(booking.getItem())
-                    .create(LocalDateTime.now())
+                    .create(timeNow)
                     .user(booking.getBooker())
                     .text(newComment.getText())
                     .build();

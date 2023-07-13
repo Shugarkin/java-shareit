@@ -21,24 +21,24 @@ public class UserController {
 
     @PostMapping
     public UserDto createUser(@RequestBody @Validated(Marker.Create.class) UserDto userDto) { //создание пользователя
-        User user = userService.createUser(UserMapper.toItem(userDto));
-        return UserMapper.toItemDto(user);
+        User user = userService.createUser(UserMapper.toUser(userDto));
+        return UserMapper.toUserDto(user);
     }
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable Long userId, @Validated({Marker.Update.class}) @RequestBody UserDto userDto) {
-        User user = userService.updateUser(userId, UserMapper.toItem(userDto));
-        return UserMapper.toItemDto(user);
+        User user = userService.updateUser(userId, UserMapper.toUser(userDto));
+        return UserMapper.toUserDto(user);
     }
 
     @GetMapping
     public List<UserDto> findAllUsers() {
-        return userService.findAllUsers().stream().map(UserMapper::toItemDto).collect(Collectors.toList());
+        return userService.findAllUsers().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{userId}")
     public UserDto findUser(@PathVariable Long userId) {
-        return UserMapper.toItemDto(userService.findUserById(userId));
+        return UserMapper.toUserDto(userService.findUserById(userId));
     }
 
     @DeleteMapping("/{userId}")

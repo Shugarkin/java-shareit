@@ -18,6 +18,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .requestId(item.getRequestId())
                 .build();
     }
 
@@ -36,11 +37,16 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .requestId(item.getRequestId())
                 .build();
     }
 
     public List<ItemDto> toListItemSearchInItemDto(List<ItemSearch> listItem) {
         return listItem.stream().map(ItemMapper::itemSerchToItemDto).collect(Collectors.toList());
+    }
+
+    public List<ItemDto> toListItemInItemDto(List<Item> listItem) {
+        return listItem.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     public ItemDtoWithBookingAndComment itemDtoWithBooking(ItemWithBookingAndComment item) {

@@ -10,6 +10,8 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class ItemWithBookingAndComment {
 
     private Long id;
