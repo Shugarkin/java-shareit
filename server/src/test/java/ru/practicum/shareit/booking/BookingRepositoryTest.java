@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 public class BookingRepositoryTest {
@@ -103,7 +103,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByBookerIdAndStateCurrent = bookingRepository.findAllByBookerIdAndStateCurrent(userId2, pageable);
 
-        assertNotEmpty(allByBookerIdAndStateCurrent, "не пустой");
+        assertEquals(allByBookerIdAndStateCurrent.size(), 1);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByBookerIdAndStateCurrent = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId2, Status.WAITING, pageable);
 
-        assertNotEmpty(allByBookerIdAndStateCurrent, "не пустой");
+        assertEquals(allByBookerIdAndStateCurrent.size(), 1);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByBookerIdAndStateCurrent = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING, pageable);
 
-        assertNotEmpty(allByBookerIdAndStateCurrent, "не пустой");
+        assertEquals(allByBookerIdAndStateCurrent.size(), 1);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByBookerIdAndStateCurrent = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable);
 
-        assertNotEmpty(allByBookerIdAndStateCurrent, "не пустой");
+        assertEquals(allByBookerIdAndStateCurrent.size(), 1);
     }
 
     @Test
@@ -153,7 +153,7 @@ public class BookingRepositoryTest {
 
         List<Booking> allByItemOwnerIdOrderByStart = bookingRepository.findAllByItemOwnerIdOrderByStart(userId);
 
-        assertNotEmpty(allByItemOwnerIdOrderByStart, "не пустой");
+        assertEquals(allByItemOwnerIdOrderByStart.size(), 1);
     }
 
     @Test
@@ -161,7 +161,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByBookerIdOrderByStartDesc = bookingRepository.findAllByBookerIdOrderByStartDesc(userId2, pageable);
 
-        assertNotEmpty(allByBookerIdOrderByStartDesc, "не пустой");
+        assertEquals(allByBookerIdOrderByStartDesc.size(), 1);
     }
 
     @Test
@@ -173,7 +173,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByBookerIdAndStatePast = bookingRepository.findAllByBookerIdAndStatePast(userId2, Status.APPROVED, pageable);
 
-        assertNotEmpty(allByBookerIdAndStatePast, "не пустой");
+        assertEquals(allByBookerIdAndStatePast.size(), 1);
     }
 
     @Test
@@ -185,7 +185,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByBookerIdAndStateFuture = bookingRepository.findAllByBookerIdAndStateFuture(userId2, pageable);
 
-        assertNotEmpty(allByBookerIdAndStateFuture, "не пустой");
+        assertEquals(allByBookerIdAndStateFuture.size(), 1);
     }
 
     @Test
@@ -196,7 +196,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByItemOwnerAndStateCurrent = bookingRepository.findAllByItemOwnerAndStateCurrent(userId, pageable);
 
-        assertNotEmpty(allByItemOwnerAndStateCurrent, "не пустой");
+        assertEquals(allByItemOwnerAndStateCurrent.size(), 1);
     }
 
     @Test
@@ -209,7 +209,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByItemOwnerIdAndStatePast = bookingRepository.findAllByItemOwnerIdAndStatePast(userId, Status.APPROVED, pageable);
 
-        assertNotEmpty(allByItemOwnerIdAndStatePast, "не пустой");
+        assertEquals(allByItemOwnerIdAndStatePast.size(), 1);
     }
 
     @Test
@@ -222,7 +222,7 @@ public class BookingRepositoryTest {
 
         List<BookingSearch> allByItemOwnerIdAndStateFuture = bookingRepository.findAllByItemOwnerIdAndStateFuture(userId, Status.REJECTED, pageable);
 
-        assertNotEmpty(allByItemOwnerIdAndStateFuture, "не пустой");
+        assertEquals(allByItemOwnerIdAndStateFuture.size(), 1);
     }
 
     @Test
@@ -236,7 +236,7 @@ public class BookingRepositoryTest {
         List<Booking> allByItemIdAndItemOwnerIdAndStatusOrderByStart =
                 bookingRepository.findAllByItemIdAndItemOwnerIdAndStatusOrderByStart(itemId, userId, Status.APPROVED);
 
-        assertNotEmpty(allByItemIdAndItemOwnerIdAndStatusOrderByStart, "не пустой");
+        assertEquals(allByItemIdAndItemOwnerIdAndStatusOrderByStart.size(), 1);
     }
 
     @Test
@@ -250,6 +250,6 @@ public class BookingRepositoryTest {
         List<BookingSearch> firstByItemIdAndBookerIdAndStatusAndFinishBefore =
                 bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId2, Status.APPROVED, pageable);
 
-        assertNotEmpty(firstByItemIdAndBookerIdAndStatusAndFinishBefore, "не пустой");
+        assertEquals(firstByItemIdAndBookerIdAndStatusAndFinishBefore.size(), 1);
     }
 }

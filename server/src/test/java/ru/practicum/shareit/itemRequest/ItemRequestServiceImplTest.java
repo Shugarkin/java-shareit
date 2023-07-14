@@ -22,9 +22,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -72,7 +70,7 @@ public class ItemRequestServiceImplTest {
 
         List<ItemRequestWithItems> listRequest = itemRequestService.findListRequest(userId, 0, 10);
 
-        assertNotEmpty(listRequest, "не пуст");
+        assertEquals(listRequest.size(), 1);
     }
 
     @Test
@@ -89,7 +87,7 @@ public class ItemRequestServiceImplTest {
 
         List<ItemRequestWithItems> listRequest = itemRequestService.findListRequestUser(userId);
 
-        assertNotEmpty(listRequest, "не пуст");
+        assertEquals(listRequest.size(), 1);
     }
 
     @Test

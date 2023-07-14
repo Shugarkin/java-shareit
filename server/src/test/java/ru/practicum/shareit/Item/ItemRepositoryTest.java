@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -105,13 +104,13 @@ public class ItemRepositoryTest {
 
         List<Item> allByRequestId = itemRepository.findAllByRequestIds(list);
 
-        assertNotEmpty(allByRequestId, "не пуст");
+        assertEquals(allByRequestId.size(), 1);
     }
 
     @Test
     void findAllByRequestId() {
         List<Item> allByRequestId = itemRepository.findAllByRequestId(itemRequestId);
 
-        assertNotEmpty(allByRequestId, "не пуст");
+        assertEquals(allByRequestId.size(), 1);
     }
 }

@@ -24,9 +24,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -162,27 +160,27 @@ public class BookingServiceImplTest {
 
         when(bookingRepository.findAllByBookerIdAndStateCurrent(userId, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking = bookingService.findListBooking(userId, State.CURRENT, from, size);
-        assertNotEmpty(listBooking, "не пуст");
+        assertEquals(listBooking.size(), 1);
 
         when(bookingRepository.findAllByBookerIdAndStatePast(userId, Status.APPROVED, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking1 = bookingService.findListBooking(userId, State.PAST, from, size);
-        assertNotEmpty(listBooking1, "не пуст");
+        assertEquals(listBooking1.size(), 1);
 
         when(bookingRepository.findAllByBookerIdAndStateFuture(userId, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking2 = bookingService.findListBooking(userId, State.FUTURE, from, size);
-        assertNotEmpty(listBooking2, "не пуст");
+        assertEquals(listBooking2.size(), 1);
 
         when(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking3 = bookingService.findListBooking(userId, State.WAITING, from, size);
-        assertNotEmpty(listBooking3, "не пуст");
+        assertEquals(listBooking3.size(), 1);
 
         when(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking4 = bookingService.findListBooking(userId, State.REJECTED, from, size);
-        assertNotEmpty(listBooking4, "не пуст");
+        assertEquals(listBooking4.size(), 1);
 
         when(bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking5 = bookingService.findListBooking(userId, State.ALL, from, size);
-        assertNotEmpty(listBooking5, "не пуст");
+        assertEquals(listBooking5.size(), 1);
 
     }
 
@@ -212,27 +210,27 @@ public class BookingServiceImplTest {
 
         when(bookingRepository.findAllByItemOwnerAndStateCurrent(userId, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking = bookingService.findListOwnerBooking(userId, State.CURRENT, from, size);
-        assertNotEmpty(listBooking, "не пуст");
+        assertEquals(listBooking.size(), 1);
 
         when(bookingRepository.findAllByItemOwnerIdAndStatePast(userId, Status.APPROVED, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking1 = bookingService.findListOwnerBooking(userId, State.PAST, from, size);
-        assertNotEmpty(listBooking1, "не пуст");
+        assertEquals(listBooking1.size(), 1);
 
         when(bookingRepository.findAllByItemOwnerIdAndStateFuture(userId, Status.REJECTED, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking2 = bookingService.findListOwnerBooking(userId, State.FUTURE, from, size);
-        assertNotEmpty(listBooking2, "не пуст");
+        assertEquals(listBooking2.size(), 1);
 
         when(bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking3 = bookingService.findListOwnerBooking(userId, State.WAITING, from, size);
-        assertNotEmpty(listBooking3, "не пуст");
+        assertEquals(listBooking3.size(), 1);
 
         when(bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.REJECTED, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking4 = bookingService.findListOwnerBooking(userId, State.REJECTED, from, size);
-        assertNotEmpty(listBooking4, "не пуст");
+        assertEquals(listBooking4.size(), 1);
 
         when(bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable)).thenReturn(List.of(booking));
         List<BookingSearch> listBooking5 = bookingService.findListOwnerBooking(userId, State.ALL, from, size);
-        assertNotEmpty(listBooking5, "не пуст");
+        assertEquals(listBooking5.size(), 1);
     }
 
     @Test
