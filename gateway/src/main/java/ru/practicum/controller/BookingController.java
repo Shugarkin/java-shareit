@@ -31,8 +31,8 @@ public class BookingController {
     public ResponseEntity<Object> approvedBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
                                       @PathVariable("bookingId") @Min(0) final long  bookingId,
                                       @RequestParam boolean approved) {
-        Booking newBooking = bookingService.approvedBooking(userId, bookingId, approved);
-        return BookingMapper.toBookingDto(newBooking);
+
+        return ;
     }
 
     @GetMapping("/{bookingId}")
