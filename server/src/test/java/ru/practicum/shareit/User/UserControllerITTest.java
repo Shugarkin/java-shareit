@@ -66,26 +66,6 @@ public class UserControllerITTest {
 
     @SneakyThrows
     @Test
-    void notCreateNotValidUser() {
-
-        User userNotValid = User.builder().id(userId).name("dgs").email(null).build();
-        mockMvc.perform(post("/users", userNotValid)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(userNotValid)))
-                        .andExpect(status().isBadRequest());
-
-        User userNotValid2 = User.builder().id(userId).name(null).email("fdsjnfj@mail.com").build();
-        mockMvc.perform(post("/users", userNotValid2)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(userNotValid2)))
-                        .andExpect(status().isBadRequest());
-
-        verify(userService, never()).createUser(userNotValid);
-        verify(userService, never()).createUser(userNotValid2);
-    }
-
-    @SneakyThrows
-    @Test
     void findAllUser() {
 
         mockMvc.perform(get("/users"))

@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.validation.ConstraintViolationException;
-
 @RestControllerAdvice("ru.practicum.shareit")
 @Slf4j
 public class HandlerException {
@@ -28,8 +26,8 @@ public class HandlerException {
         return new ErrorResponse("Дубли вне закона", e.getMessage());
     }
 
-    @ExceptionHandler({MissingRequestHeaderException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class,
-                             AvailableException.class, CommentException.class, ConstraintViolationException.class})
+    @ExceptionHandler({MissingRequestHeaderException.class, MethodArgumentNotValidException.class,
+                             AvailableException.class, CommentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse badRequest(final Exception e) {
         log.debug("Получен статус 400 Bad Request {}", e.getMessage(), e);

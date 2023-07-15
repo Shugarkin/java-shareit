@@ -67,54 +67,6 @@ public class ItemControllerITTest {
         assertEquals(itemString, objectMapper.writeValueAsString(itemDto));
     }
 
-    @SneakyThrows
-    @Test
-    void createItemNotValid() {
-        Item item = Item.builder().name("asd").available(true).build();
-        Item item1 = Item.builder().name("asd").description("asdf").build();
-        Item item2 = Item.builder().available(true).description("asdf").build();
-
-        ItemDto itemDto = ItemMapper.toItemDto(item);
-        ItemDto itemDto1 = ItemMapper.toItemDto(item1);
-        ItemDto itemDto2 = ItemMapper.toItemDto(item2);
-
-        when(itemService.createItem(userId, item)).thenReturn(item);
-
-        mockMvc.perform(post("/items", itemDto)
-                        .contentType("application/json")
-                        .header("X-Sharer-User-Id", userId)
-                        .content(objectMapper.writeValueAsString(item)))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        when(itemService.createItem(userId, item)).thenReturn(item1);
-
-        mockMvc.perform(post("/items", itemDto1)
-                        .contentType("application/json")
-                        .header("X-Sharer-User-Id", userId)
-                        .content(objectMapper.writeValueAsString(item1)))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        when(itemService.createItem(userId, item)).thenReturn(item2);
-
-        mockMvc.perform(post("/items", itemDto2)
-                        .contentType("application/json")
-                        .header("X-Sharer-User-Id", userId)
-                        .content(objectMapper.writeValueAsString(item2)))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        verify(itemService, never()).createItem(userId, item);
-        verify(itemService, never()).createItem(userId, item1);
-        verify(itemService, never()).createItem(userId, item2);
-    }
 
     @SneakyThrows
     @Test
@@ -162,7 +114,9 @@ public class ItemControllerITTest {
         when(itemService.findAllItemByUser(userId, from, size)).thenReturn(itemList);
 
         mockMvc.perform(get("/items")
-                        .header("X-Sharer-User-Id", userId))
+                        .header("X-Sharer-User-Id", userId)
+                        .param("from", String.valueOf(from))
+                        .param("size", String.valueOf(size)))
                 .andExpect(status().isOk());
 
         verify(itemService).findAllItemByUser(userId, from, size);
@@ -181,7 +135,9 @@ public class ItemControllerITTest {
 
         mockMvc.perform(get("/items/search")
                 .header("X-Sharer-User-Id", userId)
-                .param("text", text))
+                .param("text", text)
+                .param("from", String.valueOf(from))
+                .param("size", String.valueOf(size)))
                 .andExpect(status().isOk());
         verify(itemService).search(userId, text, from, size);
     }

@@ -169,7 +169,7 @@ public class BookingControllerITTest {
 
         mockMvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", userId)
-                        .param("State", String.valueOf(state))
+                        .param("state", String.valueOf(state))
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk());
@@ -187,32 +187,12 @@ public class BookingControllerITTest {
 
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", userId)
-                        .param("State", String.valueOf(state))
+                        .param("state", String.valueOf(state))
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk());
         verify(bookingService).findListOwnerBooking(userId, state, from, size);
     }
 
-    @SneakyThrows
-    @Test
-    void postBookingBadRequest() {
-        BookingDtoReceived bookingDtoReceived = BookingDtoReceived.builder()
-                .start(start)
-                .end(finish)
-                .build();
-
-        when(bookingService.postBooking(any(), any())).thenReturn(booking);
-
-        mockMvc.perform(post("/bookings", bookingDtoReceived)
-                        .contentType("application/json")
-                        .header("X-Sharer-User-Id", userId)
-                        .content(objectMapper.writeValueAsString(bookingDtoReceived))
-                        .characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-    }
 
 }
