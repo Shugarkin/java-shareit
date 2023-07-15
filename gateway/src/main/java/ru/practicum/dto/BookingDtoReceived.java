@@ -1,7 +1,11 @@
-package ru.practicum.shareit.booking.dto;
+package ru.practicum.dto;
 
 import lombok.*;
-import ru.practicum.shareit.marker.Marker;
+import ru.practicum.valid.StartBeforeEndDateValid;
+
+import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -9,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@StartBeforeEndDateValid
 public class BookingDtoReceived {
 
     @NotNull(groups = {Marker.Create.class})
