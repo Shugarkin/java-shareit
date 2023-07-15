@@ -39,7 +39,9 @@ public class ItemRequestControllerTest {
     @Test
     void addRequest() {
 
-        when(itemRequestClient.addRequest(any(), any())).thenReturn(objectResponseEntity);
+
+
+        when(itemRequestClient.addRequest(userId, request)).thenReturn(objectResponseEntity);
 
         ResponseEntity<Object> objectResponseEntity1 = itemRequestController.addRequest(userId, request);
 
@@ -48,7 +50,6 @@ public class ItemRequestControllerTest {
 
     @Test
     void findListRequestUser() {
-
 
         when(itemRequestClient.findListRequestUser(userId)).thenReturn(objectResponseEntity);
 
