@@ -11,7 +11,6 @@ import ru.practicum.dto.Marker;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/bookings")
@@ -31,33 +30,29 @@ public class BookingController {
     public ResponseEntity<Object> approvedBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
                                       @PathVariable("bookingId") @Min(0) final long  bookingId,
                                       @RequestParam boolean approved) {
-
-        return ;
+        return bookingClient.approvedBooking(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> findBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
                                   @PathVariable("bookingId") @Min(0) final long bookingId) {
-        BookingSearch newBooking = bookingService.findBooking(userId, bookingId);
-        return BookingMapper.fromBookingSearchToBookingDto(newBooking);
+        return bookingClient.findBooking(userId, bookingId);
     }
 
     @GetMapping
-    public List<ResponseEntity<Object>> findListBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
+    public ResponseEntity<Object> findListBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
                                             @RequestParam(defaultValue = "ALL") State state,
                                             @RequestParam(defaultValue = "0") @Min(0)  int from,
                                             @RequestParam(defaultValue = "10") @Min(1)  int size) {
-        List<BookingSearch> listBooking = bookingService.findListBooking(userId, state, from, size);
-        return BookingMapper.fromBookingSearchToDtoList(listBooking);
+        return bookingClient.findListBooking(userId, state, from, size);
     }
 
     @GetMapping("/owner")
-    public List<ResponseEntity<Object>> findOwnerBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
+    public ResponseEntity<Object> findOwnerBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
                                              @RequestParam(defaultValue = "ALL") State state,
                                              @RequestParam(defaultValue = "0") @Min(0)  int from,
                                              @RequestParam(defaultValue = "10") @Min(1)  int size) {
-        List<BookingSearch> listBooking = bookingService.findListOwnerBooking(userId, state, from, size);
-        return BookingMapper.fromBookingSearchToDtoList(listBooking);
+        return bookingClient.findOwnerBooking(userId, state, from, size);
     }
 
 }

@@ -10,10 +10,7 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.marker.Marker;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -25,41 +22,40 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDto postBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-                                  @Validated(Marker.Create.class) @RequestBody @Valid BookingDtoReceived booking) {
+    public BookingDto postBooking(@RequestHeader("X-Sharer-User-Id")  long userId, @RequestBody BookingDtoReceived booking) {
         Booking newBooking = bookingService.postBooking(userId, BookingMapper.fromBookingDtoReceivedToBooking(booking));
         return BookingMapper.toBookingDto(newBooking);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approvedBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
-                                      @PathVariable("bookingId") @Min(0) final long  bookingId,
+    public BookingDto approvedBooking(@RequestHeader("X-Sharer-User-Id") final long userId,
+                                      @PathVariable("bookingId") final long  bookingId,
                                       @RequestParam boolean approved) {
         Booking newBooking = bookingService.approvedBooking(userId, bookingId, approved);
         return BookingMapper.toBookingDto(newBooking);
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto findBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
-                                  @PathVariable("bookingId") @Min(0) final long bookingId) {
+    public BookingDto findBooking(@RequestHeader("X-Sharer-User-Id") final long userId,
+                                  @PathVariable("bookingId") final long bookingId) {
         BookingSearch newBooking = bookingService.findBooking(userId, bookingId);
         return BookingMapper.fromBookingSearchToBookingDto(newBooking);
     }
 
     @GetMapping
-    public List<BookingDto> findListBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
-                                            @RequestParam(defaultValue = "ALL") State state,
-                                            @RequestParam(defaultValue = "0") @Min(0)  int from,
-                                            @RequestParam(defaultValue = "10") @Min(1)  int size) {
+    public List<BookingDto> findListBooking(@RequestHeader("X-Sharer-User-Id")  final long userId,
+                                            @RequestParam State state,
+                                            @RequestParam int from,
+                                            @RequestParam int size) {
         List<BookingSearch> listBooking = bookingService.findListBooking(userId, state, from, size);
         return BookingMapper.fromBookingSearchToDtoList(listBooking);
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> findOwnerBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) final long userId,
-                                             @RequestParam(defaultValue = "ALL") State state,
-                                             @RequestParam(defaultValue = "0") @Min(0)  int from,
-                                             @RequestParam(defaultValue = "10") @Min(1)  int size) {
+    public List<BookingDto> findOwnerBooking(@RequestHeader("X-Sharer-User-Id")  final long userId,
+                                             @RequestParam State state,
+                                             @RequestParam int from,
+                                             @RequestParam int size) {
         List<BookingSearch> listBooking = bookingService.findListOwnerBooking(userId, state, from, size);
         return BookingMapper.fromBookingSearchToDtoList(listBooking);
     }

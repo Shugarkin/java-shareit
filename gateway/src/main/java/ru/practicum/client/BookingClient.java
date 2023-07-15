@@ -6,9 +6,11 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.dto.BookingDtoReceived;
+import ru.practicum.dto.State;
+
+import java.util.Map;
 
 @Service
 public class BookingClient extends BaseClient {
@@ -30,6 +32,34 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> approvedBooking(long userId, long bookingId, boolean approved) {
-        return patch("", userId, bookingId, approved);
+        Map<String, Object> parameters = Map.of(
+            "approved", approved
+        );
+        return patch("/" + bookingId +  "?approved={approved}", userId, parameters);
     }
+
+    public ResponseEntity<Object> findBooking(long userId, long bookingId) {
+        return get("/" + bookingId, userId);
+    }
+
+    public ResponseEntity<Object> findListBooking(long userId, State state, int from, int size) {
+        Map<String, Object> parameters = Map.of(
+             "state", state.name(),
+             "from", from,
+             "size", size
+        );
+
+        return get("?state={state}&from={from}&size={size}", userId, parameters);
+    }
+
+    public ResponseEntity<Object> findOwnerBooking(long userId, State state, int from, int size) {
+        Map<String, Object> parameters = Map.of(
+                "state", state.name(),
+                "from", from,
+                "size", size
+        );
+
+        return get("/owner?state={state}&from={from}&size={size}", userId, parameters);
+    }
+
 }
