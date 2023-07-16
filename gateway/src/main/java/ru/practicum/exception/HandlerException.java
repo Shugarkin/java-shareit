@@ -11,7 +11,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.validation.ConstraintViolationException;
 
-@RestControllerAdvice("ru.practicum.shareit")
+@RestControllerAdvice("ru.practicum")
 @Slf4j
 public class HandlerException {
 
