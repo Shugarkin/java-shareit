@@ -13,6 +13,7 @@ import javax.validation.constraints.Min;
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserClient userClient;

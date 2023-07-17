@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.client.ItemRequestClient;
-import ru.practicum.shareit.request.dto.ItemRequestDtoReceived;
+import ru.practicum.dto.ItemRequestDtoReceived;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;

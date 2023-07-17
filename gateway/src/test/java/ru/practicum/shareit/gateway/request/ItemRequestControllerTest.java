@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.practicum.client.ItemRequestClient;
 import ru.practicum.controller.ItemRequestController;
-import ru.practicum.shareit.request.dto.ItemRequestDtoReceived;
+import ru.practicum.dto.ItemRequestDtoReceived;
 
 import java.time.LocalDateTime;
 import java.util.List;

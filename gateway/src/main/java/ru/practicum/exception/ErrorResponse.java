@@ -12,7 +12,4 @@ public class ErrorResponse {
         this.description = description;
     }
 
-    public ErrorResponse(String error) {
-        this.error = error;
-    }
 }

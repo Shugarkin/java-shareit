@@ -23,19 +23,5 @@ public class HandlerException {
     }
 
 
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse statusError(final Throwable e) {
-        log.debug("Получен статус 500 Internal Server Error {}", e.getMessage(), e);
-        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse internalServerError(final Throwable e) {
-        log.debug("Получен статус 500 Internal Server Error {}", e.getMessage(), e);
-        return new ErrorResponse("что-то сломалось", e.getMessage());
-    }
-
 }
 
