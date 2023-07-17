@@ -101,6 +101,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemWithBookingAndComment> findAllItemByUser(Long userId, int from, int size) {
+
         Pageable pageable = PageRequest.of(from > 0 ? from / size : 0, size);
 
         List<ItemWithBookingAndComment> result = itemRepository.findAllByOwnerId(userId, pageable)
