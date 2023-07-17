@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 @StartBeforeEndDateValid
 public class BookingDtoReceived {
 
