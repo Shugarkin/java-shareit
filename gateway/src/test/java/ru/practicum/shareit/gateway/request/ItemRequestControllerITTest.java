@@ -9,15 +9,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.client.ItemClient;
 import ru.practicum.client.ItemRequestClient;
 import ru.practicum.controller.ItemRequestController;
-import ru.practicum.dto.ItemDto;
 import ru.practicum.dto.ItemRequestDtoReceived;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

@@ -11,10 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.client.UserClient;
 import ru.practicum.controller.UserController;
-import ru.practicum.dto.ItemRequestDtoReceived;
 import ru.practicum.dto.UserDto;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

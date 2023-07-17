@@ -15,7 +15,6 @@ import ru.practicum.controller.ItemController;
 import ru.practicum.dto.CommentDtoReceived;
 import ru.practicum.dto.ItemDto;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

@@ -13,8 +13,6 @@ import ru.practicum.client.UserClient;
 import ru.practicum.controller.UserController;
 import ru.practicum.dto.UserDto;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {

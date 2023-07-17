@@ -10,7 +10,6 @@ import ru.practicum.dto.ItemDto;
 import ru.practicum.dto.Marker;
 
 import javax.validation.constraints.Min;
-import java.util.List;
 
 
 @RestController
