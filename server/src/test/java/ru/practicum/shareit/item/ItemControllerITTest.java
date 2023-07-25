@@ -1,4 +1,4 @@
-package ru.practicum.shareit.Item;
+package ru.practicum.shareit.item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;

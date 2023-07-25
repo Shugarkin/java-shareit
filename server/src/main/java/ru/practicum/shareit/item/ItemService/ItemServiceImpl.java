@@ -168,10 +168,6 @@ public class ItemServiceImpl implements ItemService {
         final LocalDateTime timeNow = LocalDateTime.now();
 
         Pageable pageable = PageRequest.of(0, 1);
-        //здесь использовал лист из-за того, что почему то в сравнении с превидущим тз здесь хибер ругается на отсутствие конвертируемого класса
-        //то есть хочет чтобы я явно указал в какой класс следует сохранить, однако, на сколько я понял функции limit в хибере нет
-        //и findFirst не используешь
-        //и чтобы указать, что нужно взять именно одно значение воспользовался Pageable, а он может сохранят только в лист и страницу
         List<BookingSearch> bookingList = bookingRepository.findFirstByItemIdAndBookerIdAndStatusAndFinishBefore(itemId, userId,
                         Status.APPROVED, pageable);
         if (bookingList.isEmpty()) {

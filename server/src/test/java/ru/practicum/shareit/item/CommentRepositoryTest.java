@@ -1,4 +1,4 @@
-package ru.practicum.shareit.Item;
+package ru.practicum.shareit.item;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,8 +34,6 @@ public class CommentRepositoryTest {
 
     @Autowired
     BookingRepository bookingRepository;
-
-    //тоже самое, что и с тестами itemRepository
 
     long itemId = 1L;
     long userId = 1L;

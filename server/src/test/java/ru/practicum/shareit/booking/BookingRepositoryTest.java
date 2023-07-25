@@ -61,8 +61,6 @@ public class BookingRepositoryTest {
 
     @BeforeEach
     void before() {
-        //это все для того чтобы обойти присвоение id самой бд и не писать кучу однотипного кода,
-        // а так же чтобы не угадывать каждый раз что присвоило бд в других классах
         user = userRepository.save(user);
         userId = user.getId();
 
